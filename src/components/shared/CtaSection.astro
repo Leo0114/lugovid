@@ -31,10 +31,10 @@ const {
 const external = { target: "_blank", rel: "noopener noreferrer" };
 ---
 
-<section class:list={["section-y bg-primary text-onPrimary", className]}>
+<section class:list={["section-y bg-primary text-white", className]}>
   <div class="container-x relative isolate">
     <div
-      class="pointer-events-none absolute -right-32 -top-40 -z-10 h-80 w-80 rounded-full bg-secondary/15 blur-3xl"
+      class="pointer-events-none absolute -right-32 -top-40 -z-10 h-80 w-80 rounded-full bg-white/10 blur-3xl"
       aria-hidden="true"
     >
     </div>
@@ -43,11 +43,18 @@ const external = { target: "_blank", rel: "noopener noreferrer" };
       class="reveal flex flex-col items-start gap-10 lg:flex-row lg:items-end lg:justify-between"
     >
       <div class="max-w-2xl">
-        {eyebrow && <p class="type-eyebrow text-secondary">{eyebrow}</p>}
-        <h2 class="type-title mt-4">{title}</h2>
+        {
+          eyebrow && (
+            <p class="type-eyebrow text-amber-300 font-extrabold tracking-widest flex items-center gap-2">
+              <span class="inline-block w-6 h-0.5 bg-amber-300"></span>
+              {eyebrow}
+            </p>
+          )
+        }
+        <h2 class="type-title mt-4 text-white font-bold">{title}</h2>
         {
           description && (
-            <p class="type-body mt-5 text-onPrimary/70">{description}</p>
+            <p class="type-body mt-5 text-white/90 leading-relaxed">{description}</p>
           )
         }
       </div>

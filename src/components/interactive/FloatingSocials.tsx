@@ -51,8 +51,8 @@ export default function FloatingSocials() {
     <div className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-50 flex flex-col items-end gap-3 select-none">
       {/* Expanded Menu */}
       {isOpen && (
-        <div className="flex flex-col gap-2.5 mb-2 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-2xl border border-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-200 min-w-[240px]">
-          <div className="flex items-center justify-between gap-2 pb-2 border-b border-neutral-100 text-xs font-bold text-primary uppercase tracking-wider">
+        <div className="flex flex-col gap-2.5 mb-2 bg-panel/95 backdrop-blur-md p-3.5 rounded-2xl shadow-2xl border border-line animate-in fade-in slide-in-from-bottom-4 duration-200 min-w-[240px]">
+          <div className="flex items-center justify-between gap-2 pb-2 border-b border-line text-xs font-bold text-primary uppercase tracking-wider">
             <span className="flex items-center gap-1.5">
               <IoPaw className="text-secondary text-sm" />
               <span>Atención Inmediata</span>
@@ -66,14 +66,14 @@ export default function FloatingSocials() {
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-primary/5 transition-all duration-200 group text-neutral-700 hover:text-primary"
+              className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-panel-alt transition-all duration-200 group text-ink hover:text-primary"
             >
               <div className={`w-9 h-9 rounded-full flex items-center justify-center shadow-xs transition-transform duration-200 group-hover:scale-110 ${social.bg}`}>
                 {social.icon}
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-neutral-800 group-hover:text-primary">{social.name}</span>
-                <span className="text-[11px] text-neutral-500">{social.label}</span>
+                <span className="text-xs font-bold text-ink group-hover:text-primary">{social.name}</span>
+                <span className="text-[11px] text-muted">{social.label}</span>
               </div>
             </a>
           ))}
@@ -83,7 +83,7 @@ export default function FloatingSocials() {
       {/* Main trigger button */}
       <div className="relative group flex items-center justify-end">
         {!isOpen && (
-          <span className="hidden md:inline-block mr-3 bg-neutral-900/90 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
+          <span className="hidden md:inline-block mr-3 bg-panel/90 border border-line text-ink text-xs px-3 py-1.5 rounded-full whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
             Atención Inmediata 🐾
           </span>
         )}
@@ -91,7 +91,7 @@ export default function FloatingSocials() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Abrir canales de contacto y atención inmediata"
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white"
+          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/80 dark:border-panel"
         >
           {isOpen ? (
             <IoClose className="text-2xl" />

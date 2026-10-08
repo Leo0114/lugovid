@@ -2,6 +2,7 @@
 import { FaWhatsapp, FaBars, FaTimes, FaPaw } from "react-icons/fa";
 import { Image } from "astro:assets";
 import logoImg from "../assets/images/logo.png";
+import ThemeToggle from "./shared/ThemeToggle.astro";
 
 const currentPath = Astro.url.pathname;
 
@@ -16,19 +17,26 @@ const navLinks = [
 const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20sus%20servicios%20caninos";
 ---
 
-<header class="sticky top-0 z-40 w-full border-b border-line/80 bg-white/95 backdrop-blur-md transition-all">
+<header class="sticky top-0 z-40 w-full border-b border-line/80 bg-panel/95 backdrop-blur-md transition-all">
   <div class="container-x flex h-20 items-center justify-between">
-    <!-- Brand / Logo (Limpio, sin texto extra ni puntos pulsantes porque el logo ya lo contiene) -->
-    <a href="/" class="group flex items-center">
-      <div class="h-14 md:h-16 w-auto flex items-center transition-transform duration-300 group-hover:scale-105">
-        <Image
-          src={logoImg}
-          alt="Lugo Vid"
-          class="h-full w-auto max-h-16 object-contain"
-          loading="eager"
-        />
-      </div>
-    </a>
+    <!-- Mobile: Left Theme Toggle / Desktop: Hidden here -->
+    <div class="flex items-center md:hidden w-10 justify-start">
+      <ThemeToggle />
+    </div>
+
+    <!-- Brand / Logo: Centered on mobile, Left-aligned on desktop -->
+    <div class="flex flex-1 justify-center md:flex-initial md:justify-start">
+      <a href="/" class="group flex items-center justify-center">
+        <div class="h-14 md:h-16 w-auto flex items-center transition-transform duration-300 group-hover:scale-105">
+          <Image
+            src={logoImg}
+            alt="Lugo Vid"
+            class="h-full w-auto max-h-16 object-contain"
+            loading="eager"
+          />
+        </div>
+      </a>
+    </div>
 
     <!-- Desktop Navigation -->
     <nav class="hidden md:flex items-center gap-1 lg:gap-2">
@@ -41,8 +49,8 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
               class:list={[
                 "px-4 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200",
                 isActive
-                  ? "bg-primary/10 text-primary font-bold shadow-xs"
-                  : "text-muted hover:text-ink hover:bg-neutral-100/70",
+                  ? "bg-primary/10 text-primary font-bold shadow-xs dark:bg-primary/20 dark:text-secondary"
+                  : "text-muted hover:text-ink hover:bg-panel-alt",
               ]}
             >
               {link.label}
@@ -52,8 +60,9 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
       }
     </nav>
 
-    <!-- WhatsApp Direct CTA (Solo icono y texto "WhatsApp", sin número y sin redes sociales en header) -->
-    <div class="hidden md:flex items-center">
+    <!-- Desktop Actions: Theme Toggle + WhatsApp CTA -->
+    <div class="hidden md:flex items-center gap-3">
+      <ThemeToggle />
       <a
         href={waHref}
         target="_blank"
@@ -65,22 +74,13 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
       </a>
     </div>
 
-    <!-- Mobile Menu Button & Quick WhatsApp -->
-    <div class="flex items-center gap-2 md:hidden">
-      <a
-        href={waHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="WhatsApp"
-        class="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md"
-      >
-        <FaWhatsapp className="text-xl" />
-      </a>
+    <!-- Mobile Menu Button (No WhatsApp button outside, just hamburger button) -->
+    <div class="flex items-center md:hidden w-10 justify-end">
       <button
         type="button"
         id="mobile-menu-btn"
         aria-label="Abrir menú de navegación"
-        class="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-canvas text-ink hover:bg-neutral-100 transition-colors cursor-pointer"
+        class="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-panel text-ink hover:bg-panel-alt transition-colors cursor-pointer"
       >
         <FaBars className="text-lg" id="menu-icon-bars" />
         <FaTimes className="text-lg hidden" id="menu-icon-times" />
@@ -88,10 +88,10 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
     </div>
   </div>
 
-  <!-- Mobile Drawer Menu -->
+  <!-- Mobile Drawer Menu (Contains nav links + WhatsApp CTA inside) -->
   <div
     id="mobile-menu"
-    class="hidden md:hidden border-t border-line bg-white/95 px-5 py-6 backdrop-blur-md transition-all shadow-xl"
+    class="hidden md:hidden border-t border-line bg-panel/98 px-5 py-6 backdrop-blur-md transition-all shadow-xl"
   >
     <nav class="flex flex-col gap-2">
       {
@@ -104,7 +104,7 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
                 "flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all",
                 isActive
                   ? "bg-primary text-white shadow-md"
-                  : "text-ink hover:bg-neutral-100",
+                  : "text-ink hover:bg-panel-alt",
               ]}
             >
               <span>{link.label}</span>
@@ -115,12 +115,13 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
       }
     </nav>
 
+    <!-- Inside the drawer: WhatsApp Button -->
     <div class="mt-5 pt-5 border-t border-line">
       <a
         href={waHref}
         target="_blank"
         rel="noopener noreferrer"
-        class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#25D366] text-white font-bold text-sm shadow-md"
+        class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#25D366] text-white font-bold text-sm shadow-md hover:bg-[#20ba5a] transition-colors"
       >
         <FaWhatsapp className="text-xl" />
         <span>WhatsApp</span>

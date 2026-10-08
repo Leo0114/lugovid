@@ -33,8 +33,19 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/logo.png" />
+
+    <!-- Dark Mode Initializer Script (No-flash) -->
+    <script is:inline>
+      function applyTheme() {
+        const stored = typeof localStorage !== "undefined" ? localStorage.getItem("theme") : null;
+        const isDark = stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      }
+      applyTheme();
+      document.addEventListener("astro:after-swap", applyTheme);
+    </script>
   </head>
-  <body class="min-h-screen flex flex-col bg-canvas text-ink antialiased selection:bg-primary/20 selection:text-primary">
+  <body class="min-h-screen flex flex-col bg-canvas text-ink antialiased selection:bg-primary/20 selection:text-primary transition-colors duration-300">
     <Navbar />
 
     <main class="flex-1">
