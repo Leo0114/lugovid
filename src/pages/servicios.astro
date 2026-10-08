@@ -1,0 +1,300 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/shared/PageHero.astro";
+import CtaSection from "../components/shared/CtaSection.astro";
+import InteractiveBookingCalc from "../components/interactive/InteractiveBookingCalc";
+import { FaDog, FaHeart, FaWalking, FaShower, FaCarAlt, FaPaw, FaWhatsapp, FaCheckCircle, FaClock, FaShieldAlt } from "react-icons/fa";
+
+const phone = "312 593 8264";
+
+const allServices = [
+  {
+    id: "guarderia",
+    name: "Guardería Canina (Daycare)",
+    badge: "Socialización Diaria",
+    icon: FaDog,
+    iconColor: "from-primary to-primary-dark",
+    short: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    details: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Duis aute irure dolor in reprehenderit in voluptate velit esse.",
+      "Excepteur sint occaecat cupidatat non proident, sunt in culpa.",
+    ],
+    schedule: "Lunes a Sábado: 7:30 AM - 7:30 PM",
+    included: "Monitoreo continuo, hidratación fresca y áreas de juego con sombra.",
+  },
+  {
+    id: "pension",
+    name: "Pensión Canina (Hospedaje)",
+    badge: "Estadías & Vacaciones",
+    icon: FaHeart,
+    iconColor: "from-secondary to-secondary-dark",
+    short: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.",
+    details: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.",
+      "Duis aute irure dolor in reprehenderit in voluptate.",
+    ],
+    schedule: "24 Horas / Todos los días del año",
+    included: "Habitaciones climatizadas, camitas cómodas y rutina de noche tranquila.",
+  },
+  {
+    id: "paseos",
+    name: "Paseos & Rutinas de Ejercicio",
+    badge: "Actividad y Salud",
+    icon: FaWalking,
+    iconColor: "from-emerald-500 to-teal-600",
+    short: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
+    details: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "Exercitation ullamco laboris nisi ut aliquip ex ea commodo.",
+      "Sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "Aliquam lorem ante, dapibus in viverra quis, feugiat a tellus.",
+    ],
+    schedule: "Horarios matutinos y vespertinos",
+    included: "Rutas seguras en Colima, correas ergonómicas y descansos de hidratación.",
+  },
+  {
+    id: "banos",
+    name: "Baños & Spa Canino",
+    badge: "Higiene y Relajación",
+    icon: FaShower,
+    iconColor: "from-sky-500 to-blue-600",
+    short: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat.",
+    details: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "Tempor incididunt ut labore et dolore magna aliqua.",
+      "Minim veniam, quis nostrud exercitation ullamco laboris.",
+      "Reprehenderit in voluptate velit esse cillum dolore.",
+    ],
+    schedule: "Con cita previa o al término de su estadía",
+    included: "Shampoo hipoalergénico, secado profesional y corte de uñas.",
+  },
+  {
+    id: "transporte",
+    name: "Transporte Canino VIP",
+    badge: "Puerta a Puerta",
+    icon: FaCarAlt,
+    iconColor: "from-amber-500 to-orange-600",
+    short: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim id est laborum civitas.",
+    details: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "Quis nostrud exercitation ullamco laboris nisi ut aliquip.",
+      "In reprehenderit in voluptate velit esse cillum dolore eu.",
+      "Sunt in culpa qui officia deserunt mollit anim.",
+    ],
+    schedule: "Rutas programadas en zona metropolitana de Colima",
+    included: "Unidades acondicionadas, transportadoras seguras y cinturones caninos.",
+  },
+  {
+    id: "diversion",
+    name: "Mucha Diversión & Recreación",
+    badge: "Juegos y Estimulación",
+    icon: FaPaw,
+    iconColor: "from-rose-500 to-pink-600",
+    short: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam lorem ante, dapibus in viverra quis, feugiat a tellus integer.",
+    details: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "Sed do eiusmod tempor incididunt ut labore et dolore.",
+      "Excepteur sint occaecat cupidatat non proident.",
+      "Adipiscing elit sed do eiusmod tempor incididunt.",
+    ],
+    schedule: "Durante todas las sesiones de guardería y pensión",
+    included: "Juguetes interactivos, circuitos de agility suave y albercada perruna.",
+  },
+];
+
+const faqs = [
+  {
+    q: "¿Qué requisitos necesita mi perrito para ingresar a guardería o pensión?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  },
+  {
+    q: "¿Cómo son los reportes que envían a los dueños por WhatsApp?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+  },
+  {
+    q: "¿Qué pasa si mi mascota tiene una dieta especial o medicamentos?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.",
+  },
+  {
+    q: "¿Hacen paseos individuales o grupales?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.",
+  },
+];
+---
+
+<Layout
+  title="Servicios Caninos | Lugo Vid Guardería & Pensión Colima"
+  description="Servicios completos para tu perro: Guardería canina, pensión, paseos, baños spa, transporte y mucha diversión en Colima. WhatsApp 312 593 8264"
+>
+  <!-- Page Header -->
+  <PageHero
+    eyebrow="Cuidado Integral para Mascotas"
+    title="Nuestros Servicios Caninos"
+    subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="#cotizador-servicios" class="btn btn-primary">
+        <FaPaw className="text-base" />
+        <span>Cotizar Servicio</span>
+      </a>
+      <a
+        href="https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20sus%20servicios"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn bg-[#25D366] text-white hover:bg-[#20ba5a]"
+      >
+        <FaWhatsapp className="text-lg" />
+        <span>Consultar al {phone}</span>
+      </a>
+    </div>
+  </PageHero>
+
+  <!-- Detailed Services Section -->
+  <section class="section-y bg-canvasAlt relative">
+    <div class="container-x">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {
+          allServices.map((serv, index) => {
+            const Icon = serv.icon;
+            return (
+              <div class="card p-7 md:p-8 flex flex-col justify-between hover:border-primary/50 relative overflow-hidden group">
+                <div class="pointer-events-none absolute -bottom-6 -right-6 text-neutral-100 text-8xl opacity-30 select-none group-hover:scale-110 transition-transform">
+                  🐾
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between mb-5">
+                    <div class={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${serv.iconColor} text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform`}>
+                      <Icon />
+                    </div>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-primary/10 text-primary uppercase tracking-wider">
+                      {serv.badge}
+                    </span>
+                  </div>
+
+                  <h3 class="type-heading text-ink group-hover:text-primary transition-colors">
+                    {serv.name}
+                  </h3>
+
+                  <p class="type-body text-sm text-muted mt-3 leading-relaxed">
+                    {serv.short}
+                  </p>
+
+                  <div class="mt-5 space-y-2 pt-4 border-t border-neutral-100">
+                    <span class="text-xs font-bold text-ink uppercase tracking-wider block mb-2">
+                      Lo que incluye:
+                    </span>
+                    {serv.details.map((point) => (
+                      <div class="flex items-start gap-2 text-xs text-neutral-600">
+                        <FaCheckCircle className="text-secondary shrink-0 mt-0.5" />
+                        <span>{point}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div class="mt-4 p-3 rounded-xl bg-canvas border border-line text-xs space-y-1">
+                    <div class="flex items-center gap-1.5 text-muted">
+                      <FaClock className="text-primary text-xs" />
+                      <span class="font-semibold text-ink">Horario:</span> {serv.schedule}
+                    </div>
+                    <div class="flex items-center gap-1.5 text-muted">
+                      <FaShieldAlt className="text-secondary text-xs" />
+                      <span class="font-semibold text-ink">Plus:</span> {serv.included}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 pt-5 border-t border-line flex items-center justify-between">
+                  <a
+                    href={`https://wa.me/523125938264?text=${encodeURIComponent(`Hola Lugo Vid, deseo más información y reservar el servicio: ${serv.name}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-primary text-xs w-full justify-center"
+                  >
+                    <FaWhatsapp className="text-base" />
+                    <span>Reservar este servicio</span>
+                  </a>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Calculator on Services Page -->
+  <section class="section-y bg-canvas relative" id="cotizador-servicios">
+    <div class="container-x">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <p class="type-eyebrow text-secondary">Herramienta Interactiva</p>
+        <h2 class="type-title mt-2 text-ink">
+          Cotiza tu paquete ideal en segundos
+        </h2>
+        <p class="type-body text-muted mt-3">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt.
+        </p>
+      </div>
+
+      <div class="max-w-5xl mx-auto">
+        <InteractiveBookingCalc client:visible />
+      </div>
+    </div>
+  </section>
+
+  <!-- Modern Accordion FAQs (Native <details> with :has() styling) -->
+  <section class="section-y bg-canvasAlt">
+    <div class="container-x max-w-4xl">
+      <div class="text-center mb-12">
+        <p class="type-eyebrow text-primary">Preguntas Frecuentes</p>
+        <h2 class="type-title mt-2 text-ink">
+          Todo lo que necesitas saber sobre Lugo Vid
+        </h2>
+        <p class="type-body text-muted mt-3">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        {
+          faqs.map((faq, index) => (
+            <details class="group rounded-2xl border border-line bg-white p-5 md:p-6 shadow-sm transition-all open:border-primary/50 open:shadow-md">
+              <summary class="flex cursor-pointer items-center justify-between text-base md:text-lg font-bold text-ink list-none">
+                <span class="flex items-center gap-3">
+                  <span class="text-secondary text-sm">🐾</span>
+                  <span>{faq.q}</span>
+                </span>
+                <span class="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-neutral-600 transition-transform duration-300 group-open:rotate-180 group-open:bg-primary/10 group-open:text-primary">
+                  ▼
+                </span>
+              </summary>
+              <div class="mt-4 pt-4 border-t border-neutral-100 text-sm md:text-base leading-relaxed text-muted animate-in fade-in duration-200">
+                <p>{faq.a}</p>
+                <p class="mt-2 text-xs text-primary font-medium">
+                  ¿Tienes dudas específicas? Escríbenos directamente al WhatsApp 312 593 8264.
+                </p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <CtaSection
+    eyebrow="Atención en Colima"
+    title="Tu perrito merece los mejores cuidados y mucha diversión"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    primaryLabel="Escríbenos por WhatsApp"
+    primaryHref="https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20deseo%20agendar%20servicios%20para%20mi%20perrito"
+    primaryExternal={true}
+    secondaryLabel="Llamar al 312 593 8264"
+    secondaryHref="tel:3125938264"
+  />
+</Layout>

@@ -1,17 +1,46 @@
 ---
-import NotFoundPage from "@/components/pages/NotFoundPage.astro";
-import Layout from "@/layouts/Layout.astro";
-import { getI18N } from "@/i18n/i18n";
-
-export const prerender = true;
-
-const t = getI18N(Astro.currentLocale);
+import Layout from "../layouts/Layout.astro";
+import { FaPaw, FaHome, FaWhatsapp } from "react-icons/fa";
 ---
 
 <Layout
-  title={t.notFound.seo.title}
-  description={t.notFound.seo.description}
-  noindex
+  title="Página no encontrada | Lugo Vid Guardería Canina"
+  description="La página que buscas no existe o se fue a pasear con los perritos de Lugo Vid."
 >
-  <NotFoundPage />
+  <section class="section-y bg-canvas flex-1 flex items-center justify-center min-h-[70vh] relative overflow-hidden">
+    <div class="pointer-events-none absolute left-1/2 -top-10 -translate-x-1/2 text-neutral-100 text-[16rem] select-none opacity-40">
+      🐾
+    </div>
+
+    <div class="container-x text-center relative max-w-xl mx-auto py-12">
+      <div class="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-secondary/15 text-secondary text-5xl mb-6 shadow-inner animate-paw">
+        🐶
+      </div>
+
+      <span class="type-eyebrow text-primary block mb-2">Error 404</span>
+      <h1 class="type-display text-ink">
+        ¡Guau! Esta página se fue a pasear
+      </h1>
+
+      <p class="type-body text-muted mt-4">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <a href="/" class="btn btn-primary">
+          <FaHome className="text-base" />
+          <span>Volver al Inicio</span>
+        </a>
+        <a
+          href="https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20necesito%20ayuda%20para%20encontrar%20un%20servicio"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn bg-[#25D366] text-white hover:bg-[#20ba5a]"
+        >
+          <FaWhatsapp className="text-lg" />
+          <span>Preguntar por WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </section>
 </Layout>

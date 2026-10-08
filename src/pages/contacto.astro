@@ -1,0 +1,224 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/shared/PageHero.astro";
+import QuickContactForm from "../components/interactive/QuickContactForm";
+import { FaWhatsapp, FaInstagram, FaTiktok, FaFacebookF, FaPhoneAlt, FaMapMarkerAlt, FaClock, FaExternalLinkAlt, FaPaw } from "react-icons/fa";
+
+const phone = "312 593 8264";
+const address = "Av. Niños héroes 1275 la oriental, Colima, Mexico, 28046";
+const mapUrl = "https://www.bing.com/maps/default.aspx?v=2&where1=Av.+Ni%C3%B1os+h%C3%A9roes+1275+la+oriental%2C+Colima%2C+Mexico%2C+28046";
+const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20comunico%20desde%20la%20p%C3%A1gina%20web%20para%20solicitar%20informaci%C3%B3n";
+
+const socialChannels = [
+  {
+    name: "WhatsApp",
+    handle: "312 593 8264",
+    desc: "Atención inmediata para dudas, cotizaciones y reportes diarios.",
+    url: waHref,
+    btnText: "Escribir al WhatsApp",
+    icon: FaWhatsapp,
+    color: "bg-[#25D366] text-white shadow-emerald-500/20",
+    badge: "Canal Principal",
+  },
+  {
+    name: "Instagram",
+    handle: "@guarderiacanina",
+    desc: "Fotos diarias, historias de las actividades y reels de los perritos.",
+    url: "https://instagram.com",
+    btnText: "Ver Instagram",
+    icon: FaInstagram,
+    color: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white",
+    badge: "Fotos & Reels",
+  },
+  {
+    name: "TikTok",
+    handle: "@guarderiacanina",
+    desc: "Videos divertidos de los juegos, albercada y momentos espontáneos.",
+    url: "https://tiktok.com",
+    btnText: "Seguir en TikTok",
+    icon: FaTiktok,
+    color: "bg-black text-white",
+    badge: "Tendencias & Video",
+  },
+  {
+    name: "Facebook",
+    handle: "Lugo Vid Guardería Canina",
+    desc: "Comunidad, eventos del año, promociones y opiniones de clientes.",
+    url: "https://facebook.com",
+    btnText: "Ir a Facebook",
+    icon: FaFacebookF,
+    color: "bg-[#1877F2] text-white shadow-blue-500/20",
+    badge: "Comunidad",
+  },
+];
+---
+
+<Layout
+  title="Contacto & Redes Sociales | Lugo Vid Guardería Canina Colima"
+  description="Contáctanos al 312 593 8264 o por WhatsApp, Instagram, TikTok y Facebook. Visítanos en Av. Niños héroes 1275 la oriental, Colima."
+>
+  <PageHero
+    eyebrow="Siempre Conectados"
+    title="Contacto & Redes Sociales"
+    subtitle="Estamos a un mensaje de distancia en WhatsApp, Instagram, TikTok y Facebook."
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
+  />
+
+  <!-- Main Social Media Channels Showcase (Primary Focus) -->
+  <section class="section-y bg-canvasAlt relative">
+    <div class="container-x">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <p class="type-eyebrow text-secondary flex items-center justify-center gap-2">
+          <span>🐾</span>
+          <span>Nuestros Canales Favoritos</span>
+          <span>🐾</span>
+        </p>
+        <h2 class="type-title mt-2 text-ink">
+          ¿Por dónde prefieres hablar con nosotros?
+        </h2>
+        <p class="type-body text-muted mt-3">
+          Respondemos rápido por cualquiera de nuestras redes sociales oficiales.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {
+          socialChannels.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div class="card p-6 md:p-7 flex flex-col justify-between group hover:border-primary/50 transition-all">
+                <div>
+                  <div class="flex items-center justify-between mb-4">
+                    <div class={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform ${item.color}`}>
+                      <Icon />
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600">
+                      {item.badge}
+                    </span>
+                  </div>
+
+                  <h3 class="text-xl font-bold text-ink">
+                    {item.name}
+                  </h3>
+                  <span class="text-xs font-semibold text-primary block mt-0.5">
+                    {item.handle}
+                  </span>
+
+                  <p class="text-xs text-muted leading-relaxed mt-3">
+                    {item.desc}
+                  </p>
+                </div>
+
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-6 w-full py-3 px-4 rounded-xl text-center text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 bg-neutral-900 text-white hover:bg-primary transition-colors shadow-sm"
+                >
+                  <span>{item.btnText}</span>
+                  <FaExternalLinkAlt className="text-[10px]" />
+                </a>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Form + Physical Location Info -->
+  <section class="section-y bg-canvas relative">
+    <div class="container-x">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <!-- Contact Form (7 cols) -->
+        <div class="lg:col-span-7">
+          <QuickContactForm client:load />
+        </div>
+
+        <!-- Location & Direct Call Card (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+          <!-- Location Details Card -->
+          <div class="card p-6 md:p-8 bg-neutral-900 text-white border-neutral-800">
+            <div class="flex items-center gap-2 text-secondary font-bold text-xs uppercase tracking-wider mb-3">
+              <FaMapMarkerAlt />
+              <span>Nuestras Instalaciones</span>
+            </div>
+
+            <h3 class="text-xl md:text-2xl font-bold text-white mb-2">
+              Lugo Vid en Colima, México
+            </h3>
+
+            <p class="text-xs text-neutral-400 leading-relaxed mb-6">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+
+            <div class="space-y-4 pt-4 border-t border-neutral-800 text-xs">
+              <div class="flex items-start gap-3">
+                <FaMapMarkerAlt className="text-secondary text-base shrink-0 mt-0.5" />
+                <div>
+                  <span class="font-bold text-white block">Dirección Oficial:</span>
+                  <p class="text-neutral-300 mt-0.5">{address}</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <FaPhoneAlt className="text-primary text-base shrink-0 mt-0.5" />
+                <div>
+                  <span class="font-bold text-white block">Teléfono / WhatsApp:</span>
+                  <a href={`tel:${phone.replace(/\s+/g, "")}`} class="text-primary hover:underline font-bold text-sm">
+                    {phone}
+                  </a>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <FaClock className="text-accent text-base shrink-0 mt-0.5" />
+                <div>
+                  <span class="font-bold text-white block">Horario de Servicio:</span>
+                  <p class="text-neutral-300 mt-0.5">Lunes a Domingo: 7:30 AM - 7:30 PM</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 flex flex-col gap-3">
+              <a
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-secondary w-full justify-center text-xs uppercase tracking-wider"
+              >
+                <FaMapMarkerAlt className="text-sm" />
+                <span>Abrir en Bing / Google Maps</span>
+              </a>
+
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn bg-[#25D366] hover:bg-[#20ba5a] text-white w-full justify-center text-xs uppercase tracking-wider"
+              >
+                <FaWhatsapp className="text-base" />
+                <span>Iniciar Chat de WhatsApp</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Transportation Badge -->
+          <div class="card p-6 bg-gradient-to-r from-primary/10 via-canvas to-secondary/10 border-primary/20">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center text-xl shrink-0">
+                🐾
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-ink">¿No puedes traerlo?</h4>
+                <p class="text-xs text-muted mt-0.5">
+                  Contamos con servicio de transporte canino seguro y climatizado en Colima.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

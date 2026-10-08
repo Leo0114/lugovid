@@ -1,6 +1,7 @@
 ---
 import { FaWhatsapp, FaInstagram, FaTiktok, FaFacebookF, FaPhoneAlt, FaBars, FaTimes, FaPaw } from "react-icons/fa";
-import ThemeToggle from "./shared/ThemeToggle.astro";
+import { Image } from "astro:assets";
+import logoImg from "../assets/images/logo.png";
 
 const currentPath = Astro.url.pathname;
 
@@ -16,22 +17,27 @@ const phone = "312 593 8264";
 const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20sus%20servicios%20caninos";
 ---
 
-<header class="sticky top-0 z-40 w-full border-b border-line/80 bg-white/90 backdrop-blur-md transition-all">
+<header class="sticky top-0 z-40 w-full border-b border-line/80 bg-white/95 backdrop-blur-md transition-all">
   <div class="container-x flex h-20 items-center justify-between">
     <!-- Brand / Logo -->
     <a href="/" class="group flex items-center gap-3">
-      <div class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-secondary text-white shadow-md shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
-        <FaPaw className="text-2xl animate-paw" />
-        <span class="absolute -right-1 -top-1 flex h-3.5 w-3.5">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
-          <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-accent"></span>
+      <div class="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white p-1 shadow-sm border border-line transition-transform duration-300 group-hover:scale-105">
+        <Image
+          src={logoImg}
+          alt="Lugo Vid Guardería Canina"
+          class="h-full w-full object-contain"
+          loading="eager"
+        />
+        <span class="absolute -right-1 -top-1 flex h-3 w-3">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-secondary opacity-75"></span>
+          <span class="relative inline-flex h-3 w-3 rounded-full bg-secondary"></span>
         </span>
       </div>
       <div class="flex flex-col">
         <span class="text-xl font-extrabold tracking-tight text-ink group-hover:text-primary transition-colors flex items-center gap-1.5">
           Lugo Vid
           <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-            Canino
+            Canino 🐾
           </span>
         </span>
         <span class="text-[11px] font-semibold text-secondary tracking-wider uppercase">

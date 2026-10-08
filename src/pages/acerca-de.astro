@@ -1,0 +1,153 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/shared/PageHero.astro";
+import SplitFeature from "../components/shared/SplitFeature.astro";
+import StatGrid from "../components/shared/StatGrid.astro";
+import PillarGrid from "../components/shared/PillarGrid.astro";
+import CtaSection from "../components/shared/CtaSection.astro";
+import { FaPaw, FaWhatsapp, FaHeart, FaShieldAlt, FaAward, FaUsers } from "react-icons/fa";
+import placeholderImg from "../assets/images/placeholder.jpg";
+import dogImg1 from "../assets/images/gall/try/734254233_1006977762301477_2417320707885566799_n.jpg";
+
+const stats = [
+  { value: "+1,200", label: "Perritos felices hospedados" },
+  { value: "100%", label: "Monitoreo con fotos & videos" },
+  { value: "3,500m²", label: "Áreas verdes y recreativas" },
+  { value: "24/7", label: "Supervisión y cuidado profesional" },
+];
+
+const values = [
+  {
+    title: "Amor & Respeto Incondicional",
+    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+  },
+  {
+    title: "Seguridad & Protocolos Veterinarios",
+    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.",
+  },
+  {
+    title: "Transparencia Total con la Familia",
+    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.",
+  },
+];
+---
+
+<Layout
+  title="Quiénes Somos | Lugo Vid Guardería & Pensión Canina"
+  description="Conoce a la familia Lugo Vid en Colima. Pasión, dedicación y el mejor espacio para que tu perrito juegue, descanse y sea feliz. WhatsApp: 312 593 8264"
+>
+  <PageHero
+    eyebrow="Familia & Pasión Canina"
+    title="Cuidamos a tu mascota con el mismo amor que tú"
+    subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="/servicios" class="btn btn-primary">
+        <FaPaw className="text-base" />
+        <span>Conocer Servicios</span>
+      </a>
+      <a
+        href="https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20sus%20instalaciones"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn bg-[#25D366] text-white hover:bg-[#20ba5a]"
+      >
+        <FaWhatsapp className="text-lg" />
+        <span>Agendar Visita</span>
+      </a>
+    </div>
+  </PageHero>
+
+  <!-- Statistics Grid -->
+  <section class="section-y bg-canvas">
+    <div class="container-x">
+      <StatGrid stats={stats} variant="panel" />
+    </div>
+  </section>
+
+  <!-- Split Feature 1: The Space -->
+  <section class="section-y bg-canvasAlt relative">
+    <div class="container-x">
+      <SplitFeature
+        eyebrow="Nuestra Filosofía"
+        title="Un espacio diseñado para la libertad y felicidad de tu perro"
+        body={[
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+        ]}
+        image={placeholderImg}
+        imageAlt="Instalaciones amplias y seguras en Colima"
+        imageSide="right"
+      >
+        <div class="mt-8 flex flex-wrap gap-3">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
+            <FaHeart /> Trato Familiar
+          </span>
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold">
+            <FaShieldAlt /> Seguridad Garantizada
+          </span>
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-bold">
+            <FaUsers /> Personal Capacitado
+          </span>
+        </div>
+      </SplitFeature>
+    </div>
+  </section>
+
+  <!-- Split Feature 2: Daily Life -->
+  <section class="section-y bg-canvas relative">
+    <div class="container-x">
+      <SplitFeature
+        eyebrow="Día a Día en Lugo Vid"
+        title="Rutinas saludables de juego, descanso y socialización"
+        body={[
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        ]}
+        image={dogImg1}
+        imageAlt="Perrito feliz descansando en Lugo Vid"
+        imageSide="left"
+      >
+        <div class="mt-6 p-5 rounded-2xl bg-canvasAlt border border-line">
+          <p class="text-xs text-muted italic">
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          </p>
+          <span class="mt-2 text-xs font-bold text-primary block">
+            — El equipo de cuidadores de Lugo Vid 🐾
+          </span>
+        </div>
+      </SplitFeature>
+    </div>
+  </section>
+
+  <!-- Values & Commitments -->
+  <section class="section-y bg-canvasAlt">
+    <div class="container-x">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <p class="type-eyebrow text-secondary">Nuestros Pilares</p>
+        <h2 class="type-title mt-2 text-ink">
+          Compromiso inquebrantable con cada huésped
+        </h2>
+        <p class="type-body text-muted mt-3">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor.
+        </p>
+      </div>
+
+      <PillarGrid items={values} columns={3} />
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <CtaSection
+    eyebrow="Ven a Conocernos"
+    title="¡Te invitamos a visitar nuestras instalaciones en Colima!"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    primaryLabel="Escríbenos al 312 593 8264"
+    primaryHref="https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar%C3%ADa%20agendar%20una%20visita%20para%20conocer%20el%20lugar"
+    primaryExternal={true}
+    secondaryLabel="Ver Ubicación en Mapa"
+    secondaryHref="https://www.bing.com/maps/default.aspx?v=2&where1=Av.+Ni%C3%B1os+h%C3%A9roes+1275+la+oriental%2C+Colima%2C+Mexico%2C+28046"
+    secondaryExternal={true}
+  />
+</Layout>
