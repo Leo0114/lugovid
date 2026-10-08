@@ -1,21 +1,57 @@
 ---
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
-import { SEO } from "astro-seo";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import FloatingSocials from "../components/interactive/FloatingSocials";
+import ScrollTop from "../components/shared/ScrollTop.astro";
+import ScrollReveal from "../components/shared/ScrollReveal.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Lugo Vid | Guardería & Pensión Canina en Colima",
+  description = "Guardería canina, pensión, paseos, baños, transporte y mucha diversión en Colima. Atención amorosa y profesional para tu mascota.",
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/ico.png" />
     <ClientRouter />
     <meta name="generator" content={Astro.generator} />
-    <title>Lugo Vid</title>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/logo.png" />
   </head>
-  <body>
-    <slot />
+  <body class="min-h-screen flex flex-col bg-canvas text-ink antialiased selection:bg-primary/20 selection:text-primary">
+    <Navbar />
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Interactive Floating Socials and Speed Dial (WhatsApp, IG, TikTok, FB) -->
+    <FloatingSocials client:load />
+
+    <!-- Back to top button -->
+    <ScrollTop label="Subir al inicio" />
+
+    <!-- Intersection observer scroll reveal trigger -->
+    <ScrollReveal />
   </body>
 </html>
 
@@ -24,6 +60,5 @@ import { SEO } from "astro-seo";
   body {
     margin: 0;
     width: 100%;
-    height: 100%;
   }
 </style>
