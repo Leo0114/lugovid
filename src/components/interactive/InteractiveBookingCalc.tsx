@@ -85,7 +85,7 @@ export default function InteractiveBookingCalc() {
   };
 
   return (
-    <div className="w-full bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-line">
+    <div className="w-full bg-panel text-ink rounded-3xl p-6 md:p-10 shadow-xl border border-line">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-line">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-wider mb-2">

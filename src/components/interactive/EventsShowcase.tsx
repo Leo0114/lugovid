@@ -95,7 +95,7 @@ export default function EventsShowcase() {
             className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
               activeFilter === tab.id
                 ? "bg-primary text-white shadow-md shadow-primary/30 scale-105"
-                : "bg-white text-muted hover:text-ink hover:bg-neutral-100 border border-line"
+                : "bg-panel text-muted hover:text-ink hover:bg-panel-alt border border-line"
             }`}
           >
             {tab.label}
@@ -108,7 +108,7 @@ export default function EventsShowcase() {
         {filtered.map((item) => (
           <div
             key={item.id}
-            className="group relative flex flex-col justify-between p-6 md:p-8 rounded-3xl bg-white border border-line hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+            className="group relative flex flex-col justify-between p-6 md:p-8 rounded-3xl bg-panel text-ink border border-line hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
           >
             {/* Background paw watermark */}
             <div className="pointer-events-none absolute -bottom-6 -right-6 text-neutral-100 text-8xl opacity-40 select-none group-hover:scale-110 transition-transform duration-500">
