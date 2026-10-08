@@ -101,7 +101,7 @@ export default function InteractiveBookingCalc() {
         </div>
         <div className="shrink-0 flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-2xl border border-primary/20">
           <span className="text-xs text-primary font-medium">Atención directa:</span>
-          <span className="text-xs font-bold text-primary">312 593 8264</span>
+          <span className="text-xs font-bold text-primary">Por WhatsApp</span>
         </div>
       </div>
 

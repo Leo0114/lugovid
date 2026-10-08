@@ -1,5 +1,5 @@
 ---
-import { FaWhatsapp, FaInstagram, FaTiktok, FaFacebookF, FaPhoneAlt, FaBars, FaTimes, FaPaw } from "react-icons/fa";
+import { FaWhatsapp, FaBars, FaTimes, FaPaw } from "react-icons/fa";
 import { Image } from "astro:assets";
 import logoImg from "../assets/images/logo.png";
 
@@ -8,41 +8,25 @@ const currentPath = Astro.url.pathname;
 const navLinks = [
   { href: "/", label: "Inicio" },
   { href: "/servicios", label: "Servicios" },
-  { href: "/eventos", label: "Eventos & Summer Fest" },
+  { href: "/eventos", label: "Eventos" },
   { href: "/acerca-de", label: "Nosotros" },
   { href: "/contacto", label: "Contacto" },
 ];
 
-const phone = "312 593 8264";
 const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20sus%20servicios%20caninos";
 ---
 
 <header class="sticky top-0 z-40 w-full border-b border-line/80 bg-white/95 backdrop-blur-md transition-all">
   <div class="container-x flex h-20 items-center justify-between">
-    <!-- Brand / Logo -->
-    <a href="/" class="group flex items-center gap-3">
-      <div class="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white p-1 shadow-sm border border-line transition-transform duration-300 group-hover:scale-105">
+    <!-- Brand / Logo (Limpio, sin texto extra ni puntos pulsantes porque el logo ya lo contiene) -->
+    <a href="/" class="group flex items-center">
+      <div class="h-14 md:h-16 w-auto flex items-center transition-transform duration-300 group-hover:scale-105">
         <Image
           src={logoImg}
-          alt="Lugo Vid Guardería Canina"
-          class="h-full w-full object-contain"
+          alt="Lugo Vid"
+          class="h-full w-auto max-h-16 object-contain"
           loading="eager"
         />
-        <span class="absolute -right-1 -top-1 flex h-3 w-3">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-secondary opacity-75"></span>
-          <span class="relative inline-flex h-3 w-3 rounded-full bg-secondary"></span>
-        </span>
-      </div>
-      <div class="flex flex-col">
-        <span class="text-xl font-extrabold tracking-tight text-ink group-hover:text-primary transition-colors flex items-center gap-1.5">
-          Lugo Vid
-          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-            Canino 🐾
-          </span>
-        </span>
-        <span class="text-[11px] font-semibold text-secondary tracking-wider uppercase">
-          Guardería & Pensión
-        </span>
       </div>
     </a>
 
@@ -55,7 +39,7 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
             <a
               href={link.href}
               class:list={[
-                "px-3.5 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200",
+                "px-4 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200",
                 isActive
                   ? "bg-primary/10 text-primary font-bold shadow-xs"
                   : "text-muted hover:text-ink hover:bg-neutral-100/70",
@@ -68,59 +52,26 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
       }
     </nav>
 
-    <!-- Socials & Quick Actions -->
-    <div class="hidden md:flex items-center gap-3">
-      <!-- Quick Social Icons -->
-      <div class="flex items-center gap-1.5 border-r border-line pr-3">
-        <a
-          href="https://facebook.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Facebook"
-          class="flex h-8 w-8 items-center justify-center rounded-full text-muted hover:bg-[#1877F2]/10 hover:text-[#1877F2] transition-colors"
-        >
-          <FaFacebookF className="text-sm" />
-        </a>
-        <a
-          href="https://instagram.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Instagram"
-          class="flex h-8 w-8 items-center justify-center rounded-full text-muted hover:bg-[#E4405F]/10 hover:text-[#E4405F] transition-colors"
-        >
-          <FaInstagram className="text-sm" />
-        </a>
-        <a
-          href="https://tiktok.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="TikTok"
-          class="flex h-8 w-8 items-center justify-center rounded-full text-muted hover:bg-black/10 hover:text-black transition-colors"
-        >
-          <FaTiktok className="text-sm" />
-        </a>
-      </div>
-
-      <!-- WhatsApp Direct CTA -->
+    <!-- WhatsApp Direct CTA (Solo icono y texto "WhatsApp", sin número y sin redes sociales en header) -->
+    <div class="hidden md:flex items-center">
       <a
         href={waHref}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-xs lg:text-sm font-bold text-white shadow-md shadow-emerald-500/20 hover:bg-[#20ba5a] hover:scale-105 transition-all"
+        class="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-xs lg:text-sm font-bold text-white shadow-md shadow-emerald-500/20 hover:bg-[#20ba5a] hover:scale-105 transition-all"
       >
-        <FaWhatsapp className="text-lg" />
-        <span class="hidden lg:inline">WhatsApp:</span>
-        <span>{phone}</span>
+        <FaWhatsapp className="text-xl" />
+        <span>WhatsApp</span>
       </a>
     </div>
 
-    <!-- Mobile Menu Button -->
+    <!-- Mobile Menu Button & Quick WhatsApp -->
     <div class="flex items-center gap-2 md:hidden">
       <a
         href={waHref}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Contactar por WhatsApp"
+        aria-label="WhatsApp"
         class="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md"
       >
         <FaWhatsapp className="text-xl" />
@@ -164,48 +115,7 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
       }
     </nav>
 
-    <!-- Social links in mobile drawer -->
-    <div class="mt-6 pt-5 border-t border-line">
-      <div class="text-xs font-bold text-muted uppercase tracking-wider mb-3">
-        Síguenos y conéctate:
-      </div>
-      <div class="grid grid-cols-4 gap-2 mb-4">
-        <a
-          href="https://facebook.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-neutral-50 text-neutral-700 hover:text-[#1877F2]"
-        >
-          <FaFacebookF className="text-lg" />
-          <span class="text-[10px] mt-1 font-semibold">Facebook</span>
-        </a>
-        <a
-          href="https://instagram.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-neutral-50 text-neutral-700 hover:text-[#E4405F]"
-        >
-          <FaInstagram className="text-lg" />
-          <span class="text-[10px] mt-1 font-semibold">Instagram</span>
-        </a>
-        <a
-          href="https://tiktok.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-neutral-50 text-neutral-700 hover:text-black"
-        >
-          <FaTiktok className="text-lg" />
-          <span class="text-[10px] mt-1 font-semibold">TikTok</span>
-        </a>
-        <a
-          href="tel:3125938264"
-          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-neutral-50 text-neutral-700 hover:text-primary"
-        >
-          <FaPhoneAlt className="text-lg" />
-          <span class="text-[10px] mt-1 font-semibold">Llamar</span>
-        </a>
-      </div>
-
+    <div class="mt-5 pt-5 border-t border-line">
       <a
         href={waHref}
         target="_blank"
@@ -213,7 +123,7 @@ const waHref = "https://wa.me/523125938264?text=Hola%20Lugo%20Vid,%20me%20gustar
         class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#25D366] text-white font-bold text-sm shadow-md"
       >
         <FaWhatsapp className="text-xl" />
-        <span>Escríbenos: 312 593 8264</span>
+        <span>WhatsApp</span>
       </a>
     </div>
   </div>

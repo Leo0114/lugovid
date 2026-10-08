@@ -6,7 +6,7 @@ export default function FloatingSocials() {
   const [isOpen, setIsOpen] = useState(false);
 
   const phone = "3125938264";
-  const defaultMsg = encodeURIComponent("¡Hola! Me gustaría cotizar y pedir informes sobre sus servicios en la Guardería Canina.");
+  const defaultMsg = encodeURIComponent("¡Hola! Me gustaría cotizar y pedir informes sobre sus servicios en la Guardería Canina Lugo Vid.");
   const waUrl = `https://wa.me/52${phone}?text=${defaultMsg}`;
 
   const socials = [
@@ -14,47 +14,50 @@ export default function FloatingSocials() {
       name: "WhatsApp",
       icon: <FaWhatsapp className="text-xl" />,
       url: waUrl,
-      bg: "bg-[#25D366] hover:bg-[#20ba5a]",
-      label: "Escríbenos al 312 593 8264",
+      bg: "bg-primary hover:bg-primary-dark text-white",
+      label: "Escríbenos directamente",
     },
     {
       name: "Instagram",
       icon: <FaInstagram className="text-xl" />,
-      url: "https://instagram.com",
-      bg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] hover:opacity-90",
-      label: "@guarderiacanina",
+      url: "https://www.instagram.com/lugo.vid/",
+      bg: "bg-secondary hover:bg-secondary-dark text-white",
+      label: "@lugo.vid",
     },
     {
       name: "TikTok",
       icon: <FaTiktok className="text-xl" />,
-      url: "https://tiktok.com",
-      bg: "bg-black hover:bg-neutral-800",
-      label: "TikTok perruno",
+      url: "https://www.tiktok.com/@lugovid2021",
+      bg: "bg-primary hover:bg-primary-dark text-white",
+      label: "@lugovid2021",
     },
     {
       name: "Facebook",
       icon: <FaFacebookF className="text-xl" />,
-      url: "https://facebook.com",
-      bg: "bg-[#1877F2] hover:bg-[#166fe5]",
-      label: "Comunidad Facebook",
+      url: "https://www.facebook.com/p/Lugovid-100089677875237/",
+      bg: "bg-secondary hover:bg-secondary-dark text-white",
+      label: "Lugovid en Facebook",
     },
     {
       name: "Llamada Directa",
-      icon: <FaPhoneAlt className="text-lg" />,
+      icon: <FaPhoneAlt className="text-base" />,
       url: `tel:${phone}`,
-      bg: "bg-primary hover:bg-primary-dark",
-      label: "Llamar: 312 593 8264",
+      bg: "bg-primary hover:bg-primary-dark text-white",
+      label: "Llamar a recepción",
     },
   ];
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3 select-none">
+    <div className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-50 flex flex-col items-end gap-3 select-none">
       {/* Expanded Menu */}
       {isOpen && (
-        <div className="flex flex-col gap-2.5 mb-2 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-2xl border border-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <div className="flex items-center gap-2 pb-2 border-b border-neutral-100 text-xs font-bold text-primary uppercase tracking-wider">
-            <IoPaw className="text-secondary animate-bounce text-sm" />
-            <span>¡Conéctate con nosotros!</span>
+        <div className="flex flex-col gap-2.5 mb-2 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-2xl border border-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-200 min-w-[240px]">
+          <div className="flex items-center justify-between gap-2 pb-2 border-b border-neutral-100 text-xs font-bold text-primary uppercase tracking-wider">
+            <span className="flex items-center gap-1.5">
+              <IoPaw className="text-secondary text-sm" />
+              <span>Atención Inmediata</span>
+            </span>
+            <span className="text-[10px] text-muted font-normal">🐾 Lugo Vid</span>
           </div>
 
           {socials.map((social) => (
@@ -63,13 +66,13 @@ export default function FloatingSocials() {
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-neutral-50 transition-all duration-200 group text-neutral-700 hover:text-primary"
+              className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-primary/5 transition-all duration-200 group text-neutral-700 hover:text-primary"
             >
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm transition-transform duration-200 group-hover:scale-110 ${social.bg}`}>
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center shadow-xs transition-transform duration-200 group-hover:scale-110 ${social.bg}`}>
                 {social.icon}
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-neutral-800">{social.name}</span>
+                <span className="text-xs font-bold text-neutral-800 group-hover:text-primary">{social.name}</span>
                 <span className="text-[11px] text-neutral-500">{social.label}</span>
               </div>
             </a>
@@ -78,31 +81,27 @@ export default function FloatingSocials() {
       )}
 
       {/* Main trigger button */}
-      <div className="relative group">
+      <div className="relative group flex items-center justify-end">
+        {!isOpen && (
+          <span className="hidden md:inline-block mr-3 bg-neutral-900/90 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
+            Atención Inmediata 🐾
+          </span>
+        )}
+
         <button
           onClick={() => setIsOpen(!isOpen)}
-          aria-label="Abrir canales de contacto y redes sociales"
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/80"
+          aria-label="Abrir canales de contacto y atención inmediata"
+          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white"
         >
           {isOpen ? (
             <IoClose className="text-2xl" />
           ) : (
             <div className="flex items-center gap-2">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
-              </span>
-              <IoPaw className="text-lg text-white" />
-              <span>¡Atención Inmediata!</span>
+              <IoPaw className="text-lg text-white animate-paw" />
+              <span>Atención Inmediata</span>
             </div>
           )}
         </button>
-
-        {!isOpen && (
-          <span className="hidden md:inline-block absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-neutral-900 text-white text-xs px-2.5 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
-            WhatsApp, Instagram, TikTok & Facebook 🐾
-          </span>
-        )}
       </div>
     </div>
   );

@@ -4,7 +4,6 @@ import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import FloatingSocials from "../components/interactive/FloatingSocials";
-import ScrollTop from "../components/shared/ScrollTop.astro";
 import ScrollReveal from "../components/shared/ScrollReveal.astro";
 
 interface Props {
@@ -44,11 +43,8 @@ const {
 
     <Footer />
 
-    <!-- Interactive Floating Socials and Speed Dial (WhatsApp, IG, TikTok, FB) -->
+    <!-- Botón flotante de atención inmediata en la esquina inferior derecha -->
     <FloatingSocials client:load />
-
-    <!-- Back to top button -->
-    <ScrollTop label="Subir al inicio" />
 
     <!-- Intersection observer scroll reveal trigger -->
     <ScrollReveal />
