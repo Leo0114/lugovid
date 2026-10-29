@@ -1,0 +1,31 @@
+---
+/** "Desde $180 / día" with consistent type in cards and detail pages. */
+import { formatMXN, type PriceLike } from "@/lib/pricing";
+
+interface Props {
+  price: PriceLike;
+  size?: "sm" | "lg";
+  /** `image` for light text on photos. */
+  surface?: "page" | "image";
+  class?: string;
+}
+
+const { price, size = "sm", surface = "page", class: className = "" } = Astro.props;
+const { amount, unit, from = true } = price;
+const lg = size === "lg";
+const sub = surface === "image" ? "text-white/70" : "text-muted";
+---
+
+<p class:list={["flex items-baseline gap-1.5", className]}>
+  {from && <span class:list={["text-[13px]", sub]}>Desde</span>}
+  <span
+    class:list={[
+      "font-bold tabular-nums tracking-tight",
+      lg ? "text-4xl md:text-5xl" : "text-base",
+      surface === "image" ? "text-white" : "text-ink",
+    ]}
+  >
+    {formatMXN(amount)}
+  </span>
+  <span class:list={[lg ? "text-base" : "text-[13px]", sub]}>/ {unit}</span>
+</p>

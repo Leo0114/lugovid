@@ -7,7 +7,11 @@ import ContactActions from "@/components/ui/ContactActions.astro";
 import Gallery from "@/components/shared/Gallery.astro";
 import CardCarousel from "@/components/sliders/CardCarousel.astro";
 import ServiceCard from "@/components/cards/ServiceCard.astro";
+import PriceTag from "@/components/ui/PriceTag.astro";
+import BookingCalculator from "@/components/interactive/BookingCalculator.astro";
+import SectionHeader from "@/components/shared/SectionHeader.astro";
 import { getServicios } from "@/lib/content";
+import { DOG_SIZES, formatMXN, priceForSize } from "@/lib/pricing";
 
 export const prerender = true;
 
@@ -17,7 +21,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { title, summary, badge, icon, tone, cover, coverAlt, schedule, includes, gallery } = entry.data;
+const { title, summary, badge, icon, tone, cover, coverAlt, schedule, includes, gallery, price, quotable } = entry.data;
 const { Content } = await render(entry);
 const others = (await getServicios()).filter((s) => s.id !== entry.id);
 const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
@@ -28,7 +32,7 @@ const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
     <header class="container-x pt-8 md:pt-12">
       <a
         href="/servicios"
-        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-primary"
+        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-primary-ink"
       >
         <FiArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true" />
         Servicios
@@ -49,7 +53,7 @@ const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
 
         <div>
           {badge && (
-            <span class="inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12px] font-semibold text-primary dark:bg-primary/20">
+            <span class="inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12px] font-semibold text-primary-ink dark:bg-primary/20">
               {badge}
             </span>
           )}
@@ -58,9 +62,16 @@ const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
           </h1>
           <p class="type-subheading mt-4 max-w-xl text-muted">{summary}</p>
 
+          {price && (
+            <div class="mt-6">
+              <PriceTag price={price} size="lg" />
+              {price.note && <p class="mt-1.5 text-sm text-muted">{price.note}</p>}
+            </div>
+          )}
+
           {schedule && (
             <p class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ink">
-              <FiClock className="h-4 w-4 text-secondary" aria-hidden="true" />
+              <FiClock className="h-4 w-4 text-secondary-ink" aria-hidden="true" />
               {schedule}
             </p>
           )}
@@ -71,22 +82,44 @@ const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
     </header>
 
     <div class="container-x section-y grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
-      <div class="prose prose-slate max-w-[68ch] dark:prose-invert prose-headings:tracking-tight prose-a:text-primary">
+      <div class="prose prose-slate max-w-[68ch] dark:prose-invert prose-headings:tracking-tight prose-a:text-primary-ink">
         <Content />
       </div>
 
       {
-        includes.length > 0 && (
-          <aside class="h-fit rounded-2xl bg-panel-alt p-6 lg:sticky lg:top-28">
+        (includes.length > 0 || price?.bySize) && (
+          <aside class="h-fit space-y-8 rounded-2xl bg-panel-alt p-6 lg:sticky lg:top-28">
+            {price?.bySize && (
+              <div>
+                <h2 class="text-base font-bold text-ink">Precio por tamaño</h2>
+                <dl class="mt-4 space-y-2.5">
+                  {DOG_SIZES.map((size) => (
+                    <div class="flex items-baseline justify-between gap-3 text-sm">
+                      <dt class="text-ink/85">
+                        {size.name} <span class="text-muted">{size.weight}</span>
+                      </dt>
+                      <dd class="font-semibold tabular-nums text-ink">
+                        {formatMXN(priceForSize(price.amount, size))}
+                        <span class="font-normal text-muted"> / {price.unit}</span>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+            {includes.length > 0 && (
+            <div>
             <h2 class="text-base font-bold text-ink">Incluye</h2>
             <ul class="mt-4 space-y-3">
               {includes.map((item) => (
                 <li class="flex items-start gap-2.5 text-sm text-ink/85">
-                  <FiCheck className="mt-0.5 h-4 w-4 shrink-0 text-secondary" aria-hidden="true" />
+                  <FiCheck className="mt-0.5 h-4 w-4 shrink-0 text-secondary-ink" aria-hidden="true" />
                   {item}
                 </li>
               ))}
             </ul>
+            </div>
+            )}
           </aside>
         )
       }
@@ -103,8 +136,21 @@ const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
   </article>
 
   {
+    price && quotable && (
+      <section class="section-y bg-canvas-alt" id="cotizador">
+        <div class="container-x">
+          <SectionHeader align="center" title={`Cotiza ${title.toLowerCase()}`} class="mb-10" />
+          <div class="mx-auto max-w-5xl">
+            <BookingCalculator serviceId={entry.id} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
     others.length > 0 && (
-      <section class="section-y bg-canvas-alt">
+      <section class="section-y bg-canvas">
         <div class="container-x">
           <CardCarousel title="Otros servicios" href="/servicios" hrefLabel="Ver todos">
             {others.map((s) => (

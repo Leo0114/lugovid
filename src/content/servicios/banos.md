@@ -7,6 +7,11 @@ tone: sky
 order: 4
 featured: false
 schedule: "Lorem ipsum: 7:30 a 19:30"
+price:
+  amount: 220
+  unit: "baño"
+  bySize: true
+  note: "Lorem ipsum: secado y perfume incluidos"
 includes:
   - "Lorem ipsum dolor sit amet"
   - "Consectetur adipiscing elit"

@@ -10,6 +10,11 @@ tone: accent
 order: 5
 featured: true
 location: "Instalaciones Lugo Vid"
+price:
+  amount: 300
+  unit: "perrito"
+  from: false
+  bySize: false
 highlights:
   - "Lorem ipsum dolor sit amet"
   - "Consectetur adipiscing elit"

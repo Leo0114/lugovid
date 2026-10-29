@@ -7,6 +7,11 @@ tone: accent
 order: 5
 featured: false
 schedule: "Lorem ipsum: 7:30 a 19:30"
+price:
+  amount: 100
+  unit: "viaje"
+  bySize: false
+  note: "Lorem ipsum: zona metropolitana de Colima"
 includes:
   - "Lorem ipsum dolor sit amet"
   - "Consectetur adipiscing elit"

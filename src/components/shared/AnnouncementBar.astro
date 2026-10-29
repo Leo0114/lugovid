@@ -6,8 +6,9 @@
  *   variant="bar"     full-width strip above the navbar (Layout renders it)
  *   variant="inline"  rounded callout to drop inside any page section
  *
- * Dismissing is remembered per notice id, so editing the text of a notice
- * under a new file name shows it again to everyone.
+ * Closing hides the notice on every page until the next full reload: the
+ * state lives in this module's memory, which survives ClientRouter
+ * navigations but not a refresh.
  */
 import type { CollectionEntry } from "astro:content";
 import { FiArrowRight, FiX, FiInfo, FiAlertTriangle, FiGift } from "react-icons/fi";
@@ -30,14 +31,13 @@ const TONE = {
 
 const tone = aviso && TONE[aviso.data.tone];
 const Icon = tone?.icon;
-const storageKey = aviso ? `aviso-cerrado:${aviso.id}` : "";
 const external = aviso?.data.link && /^https?:/.test(aviso.data.link.href);
 ---
 
 {
   aviso && tone && Icon && (
     <aside
-      data-aviso={storageKey}
+      data-aviso={aviso.id}
       aria-label="Aviso"
       class:list={[
         "relative text-sm",
@@ -81,32 +81,23 @@ const external = aviso?.data.link && /^https?:/.test(aviso.data.link.href);
   )
 }
 
-{/* Runs inline right after the markup so a dismissed notice never flashes. */}
-<script is:inline>
-  (() => {
-    const read = (k) => {
-      try {
-        return localStorage.getItem(k);
-      } catch {
-        return null;
-      }
-    };
-    document.querySelectorAll("[data-aviso]").forEach((el) => {
-      if (read(el.dataset.aviso)) el.remove();
-    });
-  })();
-</script>
-
 <script>
+  /** Notice ids closed during this visit. Reset by a full page reload. */
+  const closed = new Set<string>();
+
+  // Strip closed notices from the incoming page before it is painted.
+  document.addEventListener("astro:before-swap", (event) => {
+    event.newDocument.querySelectorAll<HTMLElement>("[data-aviso]").forEach((el) => {
+      if (closed.has(el.dataset.aviso!)) el.remove();
+    });
+  });
+
   document.addEventListener("click", (event) => {
-    const btn = (event.target as Element | null)?.closest("[data-aviso-close]");
-    const bar = btn?.closest<HTMLElement>("[data-aviso]");
+    const bar = (event.target as Element | null)
+      ?.closest("[data-aviso-close]")
+      ?.closest<HTMLElement>("[data-aviso]");
     if (!bar) return;
-    try {
-      localStorage.setItem(bar.dataset.aviso!, "1");
-    } catch {
-      /* private mode: closes for this page view only */
-    }
+    closed.add(bar.dataset.aviso!);
     bar.remove();
   });
 </script>

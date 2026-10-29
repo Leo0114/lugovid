@@ -1,0 +1,153 @@
+---
+/**
+ * Reference prices for every service and paid event, read from each entry's
+ * `price` frontmatter. The first priced service (by `order`) is featured with
+ * its per-size breakdown unless `featuredId` says otherwise.
+ */
+import { FaPaw } from "react-icons/fa";
+import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
+import { getEventos, getServicios } from "@/lib/content";
+import { DOG_SIZES, formatMXN, priceForSize } from "@/lib/pricing";
+import { ICONS, TONES } from "@/lib/icons";
+import SectionHeader from "@/components/shared/SectionHeader.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  featuredId?: string;
+  /** Anchor of the calculator on the same page. */
+  quoteHref?: string;
+  class?: string;
+}
+
+const {
+  title = "Precios claros, sin sorpresas",
+  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Precios de referencia en pesos mexicanos.",
+  featuredId,
+  quoteHref = "#cotizador",
+  class: className = "",
+} = Astro.props;
+
+const priced = (await getServicios()).filter((s) => s.data.price);
+const events = (await getEventos()).filter((e) => e.data.price);
+
+const featured = priced.find((s) => s.id === featuredId) ?? priced[0];
+const rest = priced.filter((s) => s !== featured);
+const fp = featured?.data.price;
+---
+
+{
+  featured && fp && (
+    <section id="precios" class:list={["section-y scroll-mt-20", className]}>
+      <div class="container-x">
+        <SectionHeader title={title} description={description} class="mb-10" />
+
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-6">
+          <article class="reveal relative isolate flex flex-col overflow-hidden rounded-2xl bg-deep bg-linear-to-br from-primary-dark/0 to-deep p-7 text-white shadow-e2 dark:from-primary-dark/45 md:p-9 lg:col-span-5">
+            <FaPaw
+              className="pointer-events-none absolute -bottom-10 -right-8 -z-10 h-56 w-56 -rotate-12 text-white/5"
+              aria-hidden="true"
+            />
+            <h3 class="text-lg font-bold">{featured.data.title}</h3>
+            <p class="mt-5 flex items-baseline gap-2">
+              {fp.from && <span class="text-sm text-white/70">Desde</span>}
+              <span class="text-6xl font-extrabold leading-none tracking-[-0.03em] tabular-nums">{formatMXN(fp.amount)}</span>
+              <span class="text-base font-medium text-white/70">/ {fp.unit}</span>
+            </p>
+            {fp.note && <p class="mt-3 max-w-sm text-sm leading-relaxed text-white/75">{fp.note}</p>}
+
+            {
+              fp.bySize && (
+                <dl class="mt-7 grid grid-cols-2 gap-2">
+                  {DOG_SIZES.map((size) => (
+                    <div class="rounded-xl bg-white/[0.07] px-4 py-3 ring-1 ring-white/10">
+                      <dt class="text-xs text-white/70">
+                        {size.name}
+                        <span class="block text-[11px] text-white/55">{size.weight}</span>
+                      </dt>
+                      <dd class="mt-0.5 text-lg font-bold tabular-nums">{formatMXN(priceForSize(fp.amount, size))}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )
+            }
+
+            <div class="mt-auto flex flex-wrap items-center gap-3 pt-8">
+              <a
+                href={quoteHref}
+                class="press group inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-deep transition-colors hover:bg-accent-light"
+              >
+                Cotizar
+                <FiArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+              </a>
+              <a href={`/servicios/${featured.id}`} class="text-sm font-semibold text-white/85 underline hover:text-white">
+                Ver detalles
+              </a>
+            </div>
+          </article>
+
+          <ul class="reveal divide-y divide-line overflow-hidden rounded-2xl bg-panel shadow-e1 ring-1 ring-line lg:col-span-7">
+            {
+              rest.map((s) => {
+                const p = s.data.price!;
+                const Icon = ICONS[s.data.icon];
+                return (
+                  <li>
+                    <a
+                      href={`/servicios/${s.id}`}
+                      class="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-panel-alt md:px-6 md:py-5"
+                    >
+                      <span class:list={["flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", TONES[s.data.tone]]}>
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <span class="min-w-0 flex-1">
+                        <span class="block font-semibold text-ink">{s.data.title}</span>
+                        {p.note && <span class="block truncate text-[13px] text-muted">{p.note}</span>}
+                      </span>
+                      <span class="shrink-0 text-right">
+                        {p.from && <span class="block text-[11px] text-muted">Desde</span>}
+                        <span class="text-lg font-bold tabular-nums text-ink">{formatMXN(p.amount)}</span>
+                        <span class="text-[13px] text-muted"> / {p.unit}</span>
+                      </span>
+                      <FiArrowUpRight
+                        className="hidden h-4 w-4 shrink-0 text-muted transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary-ink sm:block"
+                        aria-hidden="true"
+                      />
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
+
+        {
+          events.length > 0 && (
+            <div class="reveal mt-8">
+              <h3 class="mb-3 text-[13px] font-semibold text-ink">Eventos</h3>
+              <ul class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:flex-wrap md:px-0">
+                {events.map((e) => (
+                  <li class="shrink-0">
+                    <a
+                      href={`/eventos/${e.id}`}
+                      class="press inline-flex h-10 items-center gap-2 rounded-full bg-panel px-4 text-sm ring-1 ring-line hover:ring-primary/40"
+                    >
+                      <span class="font-semibold text-ink">{e.data.title}</span>
+                      <span class="tabular-nums text-primary-ink">
+                        {formatMXN(e.data.price!.amount)} / {e.data.price!.unit}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        <p class="mt-6 text-xs text-muted">
+          Precios de referencia en MXN. El costo final se confirma por WhatsApp según el tamaño y las necesidades de tu perrito.
+        </p>
+      </div>
+    </section>
+  )
+}

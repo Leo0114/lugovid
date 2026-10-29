@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import InteractiveBookingCalc from "../components/interactive/InteractiveBookingCalc";
+import BookingCalculator from "../components/interactive/BookingCalculator.astro";
+import PricingSection from "../components/home/PricingSection.astro";
 import Gallery from "../components/shared/Gallery.astro";
 import CtaSection from "../components/shared/CtaSection.astro";
 import PillarGrid from "../components/shared/PillarGrid.astro";
@@ -50,7 +51,7 @@ const pillars = [
           title="Todo lo que tu perrito necesita"
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt."
         />
-        <a href="/servicios" class="group inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary">
+        <a href="/servicios" class="group inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary-ink">
           Ver todos los servicios
           <FiArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" aria-hidden="true" />
         </a>
@@ -78,7 +79,9 @@ const pillars = [
     </div>
   </section>
 
-  <section class="section-y bg-canvas" id="cotizador">
+  <PricingSection class="bg-canvas" />
+
+  <section class="section-y scroll-mt-20 bg-canvas-alt" id="cotizador">
     <div class="container-x">
       <SectionHeader
         align="center"
@@ -87,12 +90,12 @@ const pillars = [
         class="mb-10"
       />
       <div class="mx-auto max-w-5xl">
-        <InteractiveBookingCalc client:visible />
+        <BookingCalculator />
       </div>
     </div>
   </section>
 
-  <section class="section-y bg-canvas-alt" id="galeria">
+  <section class="section-y bg-canvas" id="galeria">
     <div class="container-x">
       <div class="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <SectionHeader
@@ -114,7 +117,7 @@ const pillars = [
     </div>
   </section>
 
-  <section class="section-y bg-canvas">
+  <section class="section-y bg-canvas-alt">
     <div class="container-x">
       <SectionHeader align="center" title="Cuidado con amor y responsabilidad" class="mb-12" />
       <PillarGrid items={pillars} columns={3} />

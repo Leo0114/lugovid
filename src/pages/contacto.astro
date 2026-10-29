@@ -66,7 +66,7 @@ const socialChannels = [
   <section class="section-y bg-canvasAlt relative">
     <div class="container-x">
       <div class="text-center max-w-2xl mx-auto mb-12">
-        <p class="type-eyebrow text-secondary flex items-center justify-center gap-2">
+        <p class="type-eyebrow text-secondary-ink flex items-center justify-center gap-2">
           <span>🐾</span>
           <span>Nuestros Canales Favoritos</span>
           <span>🐾</span>
@@ -90,7 +90,7 @@ const socialChannels = [
                     <div class={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform ${item.color}`}>
                       <Icon />
                     </div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary-ink">
                       {item.badge}
                     </span>
                   </div>
@@ -98,7 +98,7 @@ const socialChannels = [
                   <h3 class="text-xl font-bold text-ink">
                     {item.name}
                   </h3>
-                  <span class="text-xs font-semibold text-secondary block mt-0.5">
+                  <span class="text-xs font-semibold text-secondary-ink block mt-0.5">
                     {item.handle}
                   </span>
 
@@ -111,7 +111,7 @@ const socialChannels = [
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="mt-6 w-full py-3 px-4 rounded-xl text-center text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 bg-neutral-900 text-white hover:bg-primary transition-colors shadow-sm"
+                  class="mt-6 w-full py-3 px-4 rounded-xl text-center text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 bg-deep text-white hover:bg-primary transition-colors shadow-sm"
                 >
                   <span>{item.btnText}</span>
                   <FaExternalLinkAlt className="text-[10px]" />
@@ -129,9 +129,9 @@ const socialChannels = [
     <div class="container-x">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
         <!-- Location Details Card (5 cols) -->
-        <div class="lg:col-span-5 flex flex-col justify-between p-6 md:p-8 rounded-3xl bg-neutral-900 text-white border border-neutral-800 shadow-xl">
+        <div class="lg:col-span-5 flex flex-col justify-between p-6 md:p-8 rounded-3xl bg-deep text-white border border-white/10 shadow-xl">
           <div>
-            <div class="flex items-center gap-2 text-secondary font-bold text-xs uppercase tracking-wider mb-3">
+            <div class="flex items-center gap-2 text-secondary-ink font-bold text-xs uppercase tracking-wider mb-3">
               <FaMapMarkerAlt />
               <span>Nuestras Instalaciones</span>
             </div>
@@ -140,38 +140,38 @@ const socialChannels = [
               Lugo Vid en Colima, México 🐾
             </h3>
 
-            <p class="text-xs text-neutral-400 leading-relaxed mb-6">
+            <p class="text-xs text-white/65 leading-relaxed mb-6">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
 
-            <div class="space-y-4 pt-4 border-t border-neutral-800 text-xs">
+            <div class="space-y-4 pt-4 border-t border-white/10 text-xs">
               <div class="flex items-start gap-3">
-                <FaMapMarkerAlt className="text-secondary text-base shrink-0 mt-0.5" />
+                <FaMapMarkerAlt className="text-secondary-ink text-base shrink-0 mt-0.5" />
                 <div>
                   <span class="font-bold text-white block">Dirección:</span>
-                  <p class="text-neutral-300 mt-0.5">{address}</p>
+                  <p class="text-white/75 mt-0.5">{address}</p>
                 </div>
               </div>
 
               <div class="flex items-start gap-3">
-                <FaPhoneAlt className="text-primary text-base shrink-0 mt-0.5" />
+                <FaPhoneAlt className="text-primary-ink text-base shrink-0 mt-0.5" />
                 <div>
                   <span class="font-bold text-white block">Teléfono / WhatsApp:</span>
-                  <p class="text-neutral-300 mt-0.5">{phone}</p>
+                  <p class="text-white/75 mt-0.5">{phone}</p>
                 </div>
               </div>
 
               <div class="flex items-start gap-3">
-                <FaClock className="text-secondary text-base shrink-0 mt-0.5" />
+                <FaClock className="text-secondary-ink text-base shrink-0 mt-0.5" />
                 <div>
                   <span class="font-bold text-white block">Horario de Servicio:</span>
-                  <p class="text-neutral-300 mt-0.5">Lunes a Domingo: 7:30 AM - 7:30 PM</p>
+                  <p class="text-white/75 mt-0.5">Lunes a Domingo: 7:30 AM - 7:30 PM</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-8 pt-6 border-t border-neutral-800 flex flex-col gap-3">
+          <div class="mt-8 pt-6 border-t border-white/10 flex flex-col gap-3">
             <a
               href={waHref}
               target="_blank"
@@ -194,7 +194,7 @@ const socialChannels = [
 
         <!-- Google Maps Iframe (7 cols) -->
         <div class="lg:col-span-7 flex flex-col">
-          <div class="relative w-full h-full min-h-[420px] rounded-3xl overflow-hidden border border-line shadow-xl bg-neutral-100">
+          <div class="relative w-full h-full min-h-[420px] rounded-3xl overflow-hidden border border-line shadow-xl bg-panel-alt">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.045874013869!2d-103.7038605!3d19.2368324!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842551005543eb79%3A0xac567cd63fd16631!2sLugoVID!5e0!3m2!1ses-419!2smx!4v1791473037030!5m2!1ses-419!2smx"
               class="w-full h-full min-h-[420px] border-0"

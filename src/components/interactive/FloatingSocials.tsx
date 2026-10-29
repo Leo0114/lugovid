@@ -52,9 +52,9 @@ export default function FloatingSocials() {
       {/* Expanded Menu */}
       {isOpen && (
         <div className="flex flex-col gap-2.5 mb-2 bg-panel/95 backdrop-blur-md p-3.5 rounded-2xl shadow-2xl border border-line animate-in fade-in slide-in-from-bottom-4 duration-200 min-w-[240px]">
-          <div className="flex items-center justify-between gap-2 pb-2 border-b border-line text-xs font-bold text-primary uppercase tracking-wider">
+          <div className="flex items-center justify-between gap-2 pb-2 border-b border-line text-xs font-bold text-primary-ink uppercase tracking-wider">
             <span className="flex items-center gap-1.5">
-              <IoPaw className="text-secondary text-sm" />
+              <IoPaw className="text-secondary-ink text-sm" />
               <span>Atención Inmediata</span>
             </span>
             <span className="text-[10px] text-muted font-normal">🐾 Lugo Vid</span>
@@ -66,13 +66,13 @@ export default function FloatingSocials() {
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-panel-alt transition-all duration-200 group text-ink hover:text-primary"
+              className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-panel-alt transition-all duration-200 group text-ink hover:text-primary-ink"
             >
               <div className={`w-9 h-9 rounded-full flex items-center justify-center shadow-xs transition-transform duration-200 group-hover:scale-110 ${social.bg}`}>
                 {social.icon}
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-ink group-hover:text-primary">{social.name}</span>
+                <span className="text-xs font-bold text-ink group-hover:text-primary-ink">{social.name}</span>
                 <span className="text-[11px] text-muted">{social.label}</span>
               </div>
             </a>

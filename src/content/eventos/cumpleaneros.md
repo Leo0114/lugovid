@@ -10,6 +10,11 @@ tone: rose
 order: 3
 featured: true
 location: "Instalaciones Lugo Vid"
+price:
+  amount: 250
+  unit: "festejado"
+  from: false
+  bySize: false
 highlights:
   - "Lorem ipsum dolor sit amet"
   - "Consectetur adipiscing elit"

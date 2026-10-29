@@ -6,7 +6,7 @@ import SectionHeader from "@/components/shared/SectionHeader.astro";
 import ServiceCard from "@/components/cards/ServiceCard.astro";
 import ContactActions from "@/components/ui/ContactActions.astro";
 import OffersCarousel from "@/components/sliders/OffersCarousel.astro";
-import InteractiveBookingCalc from "@/components/interactive/InteractiveBookingCalc";
+import BookingCalculator from "@/components/interactive/BookingCalculator.astro";
 import { FiChevronDown } from "react-icons/fi";
 import { getServicios } from "@/lib/content";
 import { waLink, TEL_HREF, PHONE_DISPLAY } from "@/lib/contact";
@@ -72,7 +72,7 @@ const faqs = [
         class="mb-10"
       />
       <div class="mx-auto max-w-5xl">
-        <InteractiveBookingCalc client:visible />
+        <BookingCalculator />
       </div>
     </div>
   </section>
@@ -88,7 +88,7 @@ const faqs = [
               <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-semibold text-ink [&::-webkit-details-marker]:hidden">
                 {faq.q}
                 <FiChevronDown
-                  className="h-5 w-5 shrink-0 text-muted transition-transform duration-300 group-open:rotate-180 group-open:text-primary"
+                  className="h-5 w-5 shrink-0 text-muted transition-transform duration-300 group-open:rotate-180 group-open:text-primary-ink"
                   aria-hidden="true"
                 />
               </summary>
@@ -100,11 +100,11 @@ const faqs = [
 
       <p class="mt-6 text-center text-sm text-muted">
         ¿Otra duda?
-        <a href={waLink("Hola Lugo Vid, tengo una pregunta")} target="_blank" rel="noopener noreferrer" class="font-semibold text-primary underline">
+        <a href={waLink("Hola Lugo Vid, tengo una pregunta")} target="_blank" rel="noopener noreferrer" class="font-semibold text-primary-ink underline">
           Escríbenos
         </a>
         o llama al
-        <a href={TEL_HREF} class="font-semibold text-primary underline tabular-nums">{PHONE_DISPLAY}</a>.
+        <a href={TEL_HREF} class="font-semibold text-primary-ink underline tabular-nums">{PHONE_DISPLAY}</a>.
       </p>
     </div>
   </section>

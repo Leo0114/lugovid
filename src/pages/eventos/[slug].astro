@@ -6,6 +6,7 @@ import Media from "@/components/ui/Media.astro";
 import ContactActions from "@/components/ui/ContactActions.astro";
 import Gallery from "@/components/shared/Gallery.astro";
 import EventsCarousel from "@/components/sliders/EventsCarousel.astro";
+import PriceTag from "@/components/ui/PriceTag.astro";
 import { FREQUENCY_LABEL, getEventos } from "@/lib/content";
 
 export const prerender = true;
@@ -32,6 +33,7 @@ const {
   coverAlt,
   highlights,
   gallery,
+  price,
 } = entry.data;
 const { Content } = await render(entry);
 const others = (await getEventos()).filter((e) => e.id !== entry.id);
@@ -52,7 +54,7 @@ const facts = [
     <header class="container-x pt-8 md:pt-12">
       <a
         href="/eventos"
-        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-primary"
+        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-primary-ink"
       >
         <FiArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true" />
         Eventos
@@ -84,11 +86,12 @@ const facts = [
             {title}
           </h1>
           <p class="type-subheading mt-4 max-w-xl text-muted">{summary}</p>
+          {price && <PriceTag price={price} size="lg" class="mt-6" />}
 
           <ul class="mt-6 space-y-2">
             {facts.map(({ icon: Icon, label }) => (
               <li class="flex items-center gap-2.5 text-sm font-medium text-ink">
-                <Icon className="h-4 w-4 shrink-0 text-secondary" aria-hidden="true" />
+                <Icon className="h-4 w-4 shrink-0 text-secondary-ink" aria-hidden="true" />
                 <span class="first-letter:uppercase">{label}</span>
               </li>
             ))}
@@ -109,7 +112,7 @@ const facts = [
     </header>
 
     <div class="container-x section-y grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
-      <div class="prose prose-slate max-w-[68ch] dark:prose-invert prose-headings:tracking-tight prose-a:text-primary">
+      <div class="prose prose-slate max-w-[68ch] dark:prose-invert prose-headings:tracking-tight prose-a:text-primary-ink">
         <Content />
       </div>
 

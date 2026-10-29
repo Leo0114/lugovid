@@ -17,8 +17,14 @@
   --color-ink: var(--color-ink);
   --color-muted: var(--color-muted);
   --color-line: var(--color-line);
-  --color-baseBlack: #090d16;
+  --color-baseBlack: #071319;
   --color-onPrimary: #ffffff;
+  /* Text-safe brand hues (AA on canvas in both themes); `primary` and
+     `secondary` stay for fills, tints and icons. */
+  --color-primary-ink: var(--color-primary-ink);
+  --color-secondary-ink: var(--color-secondary-ink);
+  /* Deep teal band used by the footer and dark panels in both themes. */
+  --color-deep: var(--color-deep);
 }
 
 :root {
@@ -31,17 +37,26 @@
   --color-ink: #0c2230;
   --color-muted: #4b6470;
   --color-line: #cfe3e4;
+  --color-primary-ink: #16698a;
+  --color-secondary-ink: #0b7a76;
+  --color-deep: #0b2430;
 }
 
 :root.dark, html.dark {
-  --color-canvas: #090e17;
-  --color-canvas-alt: #0f172a;
-  --color-panel: #141e33;
-  --color-panel-alt: #1e293b;
-  --color-ink: #f8fafc;
-  --color-muted: #94a3b8;
-  --color-line: #1e293b;
-  --color-baseBlack: #000000;
+  /* Deep teal night, the dark twin of the aqua mist: same hue family, so the
+     brand reads the same in both themes. No pure black anywhere. */
+  color-scheme: dark;
+  --color-canvas: #0a161c;
+  --color-canvas-alt: #0e1e26;
+  --color-panel: #132a34;
+  --color-panel-alt: #18333e;
+  --color-ink: #e6f2f3;
+  --color-muted: #93adb6;
+  --color-line: #23424e;
+  --color-baseBlack: #050d11;
+  --color-primary-ink: #5cc2e6;
+  --color-secondary-ink: #2fcac3;
+  --color-deep: #061117;
 }
 
 /* Base typography & utility helpers */
@@ -180,30 +195,30 @@
   }
 
   .btn-primary {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-dark);
     color: #ffffff;
     box-shadow: 0 4px 14px 0 rgba(37, 150, 190, 0.39);
   }
   .btn-primary:hover {
-    background-color: var(--color-primary-dark);
+    background-color: #155f7a;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px 0 rgba(37, 150, 190, 0.45);
   }
 
   .btn-secondary {
-    background-color: var(--color-secondary);
+    background-color: #0b7a76;
     color: #ffffff;
     box-shadow: 0 4px 14px 0 rgba(19, 180, 174, 0.35);
   }
   .btn-secondary:hover {
-    background-color: var(--color-secondary-dark);
+    background-color: #09625f;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px 0 rgba(19, 180, 174, 0.45);
   }
 
   .btn-onPrimary {
     background-color: #ffffff;
-    color: var(--color-primary);
+    color: #16698a;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .btn-onPrimary:hover {
@@ -357,6 +372,22 @@ html {
 .lift:has(a:focus-visible) {
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
+}
+
+/* Dark surfaces can't lean on soft shadows; a faint top highlight plus a
+   deeper drop keeps panels separated from the canvas. */
+.dark .shadow-e1,
+.dark .shadow-e2 {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 12px 32px -12px rgb(0 0 0 / 0.6);
+}
+@media (hover: hover) {
+  .dark .lift:hover {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 22px 44px -16px rgb(0 0 0 / 0.75);
+  }
 }
 
 /* ---------------------------------------------------------------------------

@@ -1,307 +1,244 @@
-import React, { useState } from "react";
-import { FaWhatsapp, FaPaw, FaDog, FaShower, FaCarAlt, FaWalking, FaHeart } from "react-icons/fa";
+import { useMemo, useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
+import { ICONS, type IconName } from "@/lib/icons";
+import { DOG_SIZES, EXTRAS, formatMXN, pluralUnit, priceForSize } from "@/lib/pricing";
+import { waLink } from "@/lib/contact";
 
-interface ServiceOption {
+/** Serializable slice of a `servicios` entry, passed in from Astro. */
+export interface QuoteService {
   id: string;
-  name: string;
-  icon: React.ReactNode;
-  basePrice: number;
-  description: string;
+  title: string;
+  icon: IconName;
+  amount: number;
+  unit: string;
+  bySize: boolean;
 }
 
-const SERVICES: ServiceOption[] = [
-  {
-    id: "guarderia",
-    name: "Guardería Canina",
-    icon: <FaDog className="text-xl" />,
-    basePrice: 180,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  },
-  {
-    id: "pension",
-    name: "Pensión Canina",
-    icon: <FaHeart className="text-xl" />,
-    basePrice: 280,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-  },
-  {
-    id: "paseos",
-    name: "Paseos & Ejercicio",
-    icon: <FaWalking className="text-xl" />,
-    basePrice: 120,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse.",
-  },
-  {
-    id: "banos",
-    name: "Baños & Spa",
-    icon: <FaShower className="text-xl" />,
-    basePrice: 220,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.",
-  },
-  {
-    id: "transporte",
-    name: "Transporte Canino",
-    icon: <FaCarAlt className="text-xl" />,
-    basePrice: 100,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  },
-  {
-    id: "diversion",
-    name: "Mucha Diversión (Full)",
-    icon: <FaPaw className="text-xl" />,
-    basePrice: 350,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam lorem ante, dapibus in viverra quis, feugiat a tellus.",
-  },
-];
+interface Props {
+  services: QuoteService[];
+  defaultServiceId?: string;
+}
 
-const DOG_SIZES = [
-  { id: "s", name: "Chico", sub: "Hasta 10kg", multiplier: 1 },
-  { id: "m", name: "Mediano", sub: "10kg - 25kg", multiplier: 1.15 },
-  { id: "l", name: "Grande", sub: "25kg - 40kg", multiplier: 1.3 },
-  { id: "xl", name: "Gigante", sub: "+40kg", multiplier: 1.45 },
-];
+const MAX_DAYS = 30;
 
-export default function InteractiveBookingCalc() {
-  const [selectedService, setSelectedService] = useState<string>("guarderia");
-  const [selectedSize, setSelectedSize] = useState<string>("m");
-  const [days, setDays] = useState<number>(3);
-  const [withBath, setWithBath] = useState<boolean>(false);
-  const [withTransport, setWithTransport] = useState<boolean>(false);
-  const [dogName, setDogName] = useState<string>("");
+export default function InteractiveBookingCalc({ services, defaultServiceId }: Props) {
+  const [serviceId, setServiceId] = useState(defaultServiceId ?? services[0]?.id);
+  const [sizeId, setSizeId] = useState(DOG_SIZES[1].id);
+  const [days, setDays] = useState(3);
+  const [extras, setExtras] = useState<Set<string>>(new Set());
+  const [dogName, setDogName] = useState("");
 
-  const currentService = SERVICES.find((s) => s.id === selectedService) || SERVICES[0];
-  const currentSizeObj = DOG_SIZES.find((s) => s.id === selectedSize) || DOG_SIZES[1];
+  const service = services.find((s) => s.id === serviceId) ?? services[0];
+  const size = DOG_SIZES.find((s) => s.id === sizeId) ?? DOG_SIZES[0];
+  const chosenExtras = useMemo(() => EXTRAS.filter((e) => extras.has(e.id)), [extras]);
 
-  const estimatedBase = Math.round(currentService.basePrice * currentSizeObj.multiplier * days);
-  const extrasTotal = (withBath ? 200 : 0) + (withTransport ? 120 : 0);
-  const total = estimatedBase + extrasTotal;
+  const unitPrice = service ? (service.bySize ? priceForSize(service.amount, size) : service.amount) : 0;
+  const total = unitPrice * days + chosenExtras.reduce((sum, e) => sum + e.amount, 0);
 
-  const handleWhatsApp = () => {
-    const text = encodeURIComponent(
-      `¡Hola Lugo Vid! 🐾\nMe gustaría reservar con los siguientes datos:\n- Perrito: ${dogName || "Mi mascota"}\n- Servicio: ${currentService.name}\n- Tamaño: ${currentSizeObj.name} (${currentSizeObj.sub})\n- Duración: ${days} ${days === 1 ? "día/sesión" : "días/sesiones"}\n${withBath ? "- Extra: Incluir Baño & Spa 🛁\n" : ""}${withTransport ? "- Extra: Incluir Transporte redondo 🚐\n" : ""}\nEstimado aproximado: $${total} MXN\n\n¿Tienen disponibilidad? ¡Muchas gracias!`
-    );
-    window.open(`https://wa.me/523125938264?text=${text}`, "_blank");
-  };
+  if (!service) return null;
+
+  const toggleExtra = (id: string) =>
+    setExtras((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const plural = (n: number) => pluralUnit(service.unit, n);
+
+  const message = [
+    "Hola Lugo Vid, me gustaría reservar:",
+    `- Perrito: ${dogName.trim() || "Mi mascota"}`,
+    `- Servicio: ${service.title}`,
+    `- Tamaño: ${size.name} (${size.weight})`,
+    `- Duración: ${days} ${plural(days)}`,
+    ...chosenExtras.map((e) => `- Extra: ${e.label}`),
+    `Estimado: ${formatMXN(total)} MXN`,
+    "¿Tienen disponibilidad?",
+  ].join("\n");
+
+  const legend = "mb-3 text-[13px] font-semibold text-ink";
+  const option = "press cursor-pointer rounded-2xl border text-center transition-colors";
+  const optionIdle = "border-line bg-canvas text-ink hover:border-primary/50";
+  const optionOn = "border-primary bg-primary/10 text-primary-ink ring-2 ring-primary/20";
 
   return (
-    <div className="w-full bg-panel text-ink rounded-3xl p-6 md:p-10 shadow-xl border border-line">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-line">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-wider mb-2">
-            <FaPaw className="animate-paw" />
-            <span>Cotizador & Reserva Inteligente</span>
-          </div>
-          <h3 className="text-2xl md:text-3xl font-bold text-ink">
-            Personaliza la experiencia para tu perrito
-          </h3>
-          <p className="text-sm text-muted mt-1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod.
-          </p>
-        </div>
-        <div className="shrink-0 flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-2xl border border-primary/20">
-          <span className="text-xs text-primary font-medium">Atención directa:</span>
-          <span className="text-xs font-bold text-primary">Por WhatsApp</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
-        {/* Left selector options */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          {/* Step 1: Select Service */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-3">
-              1. Selecciona el servicio principal
-            </label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {SERVICES.map((serv) => {
-                const active = serv.id === selectedService;
+    <div className="w-full rounded-3xl bg-panel p-6 text-ink shadow-e2 ring-1 ring-line md:p-10">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="flex flex-col gap-7 lg:col-span-7">
+          <fieldset>
+            <legend className={legend}>1. Servicio</legend>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+              {services.map((s) => {
+                const on = s.id === service.id;
+                const Icon = ICONS[s.icon];
                 return (
                   <button
-                    key={serv.id}
+                    key={s.id}
                     type="button"
-                    onClick={() => setSelectedService(serv.id)}
-                    className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border text-center transition-all cursor-pointer ${
-                      active
-                        ? "border-primary bg-primary/10 text-primary shadow-sm ring-2 ring-primary/20"
-                        : "border-line bg-canvas hover:border-primary/40 text-neutral-700"
-                    }`}
+                    aria-pressed={on}
+                    onClick={() => setServiceId(s.id)}
+                    className={`${option} flex flex-col items-center justify-center p-3.5 ${on ? optionOn : optionIdle}`}
                   >
-                    <span className={`p-2.5 rounded-full mb-2 ${active ? "bg-primary text-white" : "bg-neutral-100 text-neutral-600"}`}>
-                      {serv.icon}
+                    <span className={`mb-2 rounded-full p-2.5 ${on ? "bg-primary-dark text-white" : "bg-panel-alt text-muted"}`}>
+                      <Icon className="text-xl" aria-hidden="true" />
                     </span>
-                    <span className="text-xs font-bold leading-tight">{serv.name}</span>
+                    <span className="text-xs font-bold leading-tight">{s.title}</span>
+                    <span className="mt-0.5 text-[11px] tabular-nums text-muted">
+                      {formatMXN(s.amount)} / {s.unit}
+                    </span>
                   </button>
                 );
               })}
             </div>
-          </div>
+          </fieldset>
 
-          {/* Step 2: Dog Size */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-3">
-              2. Tamaño de tu mascota
-            </label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-              {DOG_SIZES.map((size) => {
-                const active = size.id === selectedSize;
+          <fieldset disabled={!service.bySize} className="disabled:opacity-50">
+            <legend className={legend}>
+              2. Tamaño de tu perrito
+              {!service.bySize && <span className="ml-2 font-normal text-muted">(no cambia el precio)</span>}
+            </legend>
+            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+              {DOG_SIZES.map((s) => {
+                const on = s.id === size.id;
                 return (
                   <button
-                    key={size.id}
+                    key={s.id}
                     type="button"
-                    onClick={() => setSelectedSize(size.id)}
-                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
-                      active
-                        ? "border-secondary bg-secondary/10 text-secondary ring-2 ring-secondary/20 font-bold"
-                        : "border-line bg-canvas hover:border-secondary/40 text-neutral-700 font-medium"
-                    }`}
+                    aria-pressed={on}
+                    onClick={() => setSizeId(s.id)}
+                    className={`${option} p-3 disabled:cursor-not-allowed ${on ? optionOn : optionIdle}`}
                   >
-                    <div className="text-sm font-bold">{size.name}</div>
-                    <div className="text-[11px] text-muted">{size.sub}</div>
+                    <span className="block text-sm font-bold">{s.name}</span>
+                    <span className="block text-[11px] text-muted">{s.weight}</span>
                   </button>
                 );
               })}
             </div>
-          </div>
+          </fieldset>
 
-          {/* Step 3: Days Slider */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-muted">
-                3. Duración (Días o Sesiones)
+            <div className="mb-2 flex items-center justify-between">
+              <label htmlFor="calc-days" className="text-[13px] font-semibold text-ink">
+                3. Duración
               </label>
-              <span className="text-sm font-bold text-primary px-3 py-0.5 rounded-full bg-primary/10">
-                {days} {days === 1 ? "día" : "días"}
+              <span className="rounded-full bg-primary/10 px-3 py-0.5 text-sm font-bold tabular-nums text-primary-ink">
+                {days} {plural(days)}
               </span>
             </div>
             <input
+              id="calc-days"
               type="range"
               min={1}
-              max={30}
+              max={MAX_DAYS}
               value={days}
               onChange={(e) => setDays(Number(e.target.value))}
-              className="w-full h-2.5 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-primary"
+              className="h-2.5 w-full cursor-pointer appearance-none rounded-lg bg-panel-alt accent-primary"
             />
-            <div className="flex justify-between text-[11px] text-muted mt-1">
-              <span>1 día</span>
-              <span>15 días</span>
-              <span>30 días (Mes)</span>
+            <div className="mt-1 flex justify-between text-[11px] tabular-nums text-muted">
+              <span>1</span>
+              <span>15</span>
+              <span>{MAX_DAYS}</span>
             </div>
           </div>
 
-          {/* Step 4: Optional extras */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-muted mb-3">
-              4. Servicios adicionales recomendados
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <label className={`flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                withBath ? "border-primary bg-primary/5" : "border-line bg-canvas"
-              }`}>
-                <input
-                  type="checkbox"
-                  checked={withBath}
-                  onChange={(e) => setWithBath(e.target.checked)}
-                  className="w-4 h-4 rounded text-primary focus:ring-primary accent-primary"
-                />
-                <div className="text-left">
-                  <span className="text-xs font-bold text-ink block">Baño & Spa de salida</span>
-                  <span className="text-[11px] text-muted">+ $200 MXN</span>
-                </div>
-              </label>
-
-              <label className={`flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                withTransport ? "border-primary bg-primary/5" : "border-line bg-canvas"
-              }`}>
-                <input
-                  type="checkbox"
-                  checked={withTransport}
-                  onChange={(e) => setWithTransport(e.target.checked)}
-                  className="w-4 h-4 rounded text-primary focus:ring-primary accent-primary"
-                />
-                <div className="text-left">
-                  <span className="text-xs font-bold text-ink block">Transporte redondo en Colima</span>
-                  <span className="text-[11px] text-muted">+ $120 MXN</span>
-                </div>
-              </label>
+          <fieldset>
+            <legend className={legend}>4. Extras</legend>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {EXTRAS.map((e) => {
+                const on = extras.has(e.id);
+                return (
+                  <label
+                    key={e.id}
+                    className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-3.5 transition-colors ${
+                      on ? "border-primary bg-primary/10" : "border-line bg-canvas hover:border-primary/50"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={on}
+                      onChange={() => toggleExtra(e.id)}
+                      className="h-4 w-4 rounded accent-primary"
+                    />
+                    <span className="text-left">
+                      <span className="block text-xs font-bold text-ink">{e.label}</span>
+                      <span className="text-[11px] tabular-nums text-muted">+ {formatMXN(e.amount)}</span>
+                    </span>
+                  </label>
+                );
+              })}
             </div>
-          </div>
+          </fieldset>
         </div>
 
-        {/* Right estimation summary card */}
-        <div className="lg:col-span-5 flex flex-col justify-between p-6 md:p-8 rounded-3xl bg-gradient-to-br from-neutral-50 to-primary/5 border border-primary/20 shadow-md">
+        <aside
+          aria-live="polite"
+          className="flex flex-col justify-between rounded-3xl bg-linear-to-br from-panel-alt to-primary/10 p-6 ring-1 ring-primary/20 md:p-8 lg:col-span-5"
+        >
           <div>
-            <div className="flex items-center gap-2 text-primary font-bold text-sm mb-4">
-              <MdOutlineDateRange className="text-lg" />
-              <span>Resumen de tu Cotización</span>
-            </div>
+            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-primary-ink">
+              <MdOutlineDateRange className="text-lg" aria-hidden="true" />
+              Resumen de tu cotización
+            </h3>
 
-            <div className="mb-4">
-              <label className="block text-xs font-bold text-ink mb-1.5">
-                Nombre de tu mascota (opcional):
-              </label>
-              <input
-                type="text"
-                placeholder="Ej. Rocky, Luna, Milo..."
-                value={dogName}
-                onChange={(e) => setDogName(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-line bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-              />
-            </div>
+            <label htmlFor="calc-dog" className="mb-1.5 block text-xs font-semibold text-ink">
+              Nombre de tu perrito (opcional)
+            </label>
+            <input
+              id="calc-dog"
+              type="text"
+              autoComplete="off"
+              placeholder="Ej. Rocky, Luna, Milo"
+              value={dogName}
+              onChange={(e) => setDogName(e.target.value)}
+              className="mb-4 w-full rounded-xl border border-line bg-panel px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/40"
+            />
 
-            <div className="space-y-3 pt-2 pb-4 border-y border-line text-xs">
-              <div className="flex justify-between items-center">
-                <span className="text-muted">Servicio:</span>
-                <span className="font-bold text-ink">{currentService.name}</span>
+            <dl className="space-y-3 border-y border-line py-4 text-xs">
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">Servicio</dt>
+                <dd className="font-bold text-ink">{service.title}</dd>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted">Tamaño:</span>
-                <span className="font-semibold text-ink">{currentSizeObj.name}</span>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">Precio por {service.unit}</dt>
+                <dd className="font-semibold tabular-nums text-ink">{formatMXN(unitPrice)}</dd>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted">Tiempo estimado:</span>
-                <span className="font-semibold text-ink">{days} días</span>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">Cantidad</dt>
+                <dd className="font-semibold tabular-nums text-ink">× {days}</dd>
               </div>
-              {withBath && (
-                <div className="flex justify-between items-center text-secondary">
-                  <span>+ Baño & Spa</span>
-                  <span>+$200 MXN</span>
+              {chosenExtras.map((e) => (
+                <div key={e.id} className="flex justify-between gap-3 text-secondary-ink">
+                  <dt>{e.label}</dt>
+                  <dd className="tabular-nums">+ {formatMXN(e.amount)}</dd>
                 </div>
-              )}
-              {withTransport && (
-                <div className="flex justify-between items-center text-secondary">
-                  <span>+ Transporte</span>
-                  <span>+$120 MXN</span>
-                </div>
-              )}
-            </div>
+              ))}
+            </dl>
 
-            <div className="my-5 p-4 rounded-2xl bg-white border border-primary/20 flex items-center justify-between">
-              <div>
-                <span className="block text-xs text-muted font-medium">Estimado Total</span>
-                <span className="text-2xl md:text-3xl font-extrabold text-primary">
-                  ${total.toLocaleString("es-MX")} <span className="text-xs font-normal text-muted">MXN</span>
-                </span>
-              </div>
-              <span className="text-[11px] text-secondary font-bold bg-secondary/10 px-2.5 py-1 rounded-full">
-                ¡Sin sorpresas!
+            <div className="my-5 rounded-2xl bg-panel p-4 ring-1 ring-primary/20">
+              <span className="block text-xs font-medium text-muted">Estimado total</span>
+              <span className="text-3xl font-extrabold tabular-nums tracking-tight text-primary-ink">
+                {formatMXN(total)} <span className="text-xs font-normal text-muted">MXN</span>
               </span>
             </div>
 
-            <p className="text-[11px] text-muted italic mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.
+            <p className="mb-4 text-[11px] text-muted">
+              Precio de referencia. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleWhatsApp}
-            className="w-full py-4 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-sm md:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
+          <a
+            href={waLink(message)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="press flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-6 py-4 text-sm font-bold text-[#06361b] transition-colors hover:bg-[#2ee072] md:text-base"
           >
-            <FaWhatsapp className="text-2xl" />
-            <span>Consultar por WhatsApp</span>
-          </button>
-        </div>
+            <FaWhatsapp className="text-2xl" aria-hidden="true" />
+            Consultar por WhatsApp
+          </a>
+        </aside>
       </div>
     </div>
   );

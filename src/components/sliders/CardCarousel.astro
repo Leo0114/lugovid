@@ -56,7 +56,7 @@ const SIZE = {
         href && (
           <a
             href={href}
-            class="group mr-1 hidden items-center gap-1.5 text-sm font-semibold text-primary sm:inline-flex"
+            class="group mr-1 hidden items-center gap-1.5 text-sm font-semibold text-primary-ink sm:inline-flex"
           >
             {hrefLabel}
             <FiArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" aria-hidden="true" />
@@ -81,7 +81,7 @@ const SIZE = {
 
   {
     href && (
-      <a href={href} class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary sm:hidden">
+      <a href={href} class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-ink sm:hidden">
         {hrefLabel}
         <FiArrowRight className="h-4 w-4" aria-hidden="true" />
       </a>
@@ -124,7 +124,7 @@ const SIZE = {
     cursor: pointer;
   }
   .rail-nav:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-ink);
     background: var(--color-panel-alt);
   }
   .rail-nav:global(.is-disabled) {

@@ -12,6 +12,21 @@ import { ICON_NAMES, TONE_NAMES } from "./lib/icons";
  * inside `src/assets/` that the shared <Gallery> component reads.
  */
 
+/**
+ * Reference price in MXN. `amount` is the small-dog rate; when `bySize` is on,
+ * the other sizes are derived from DOG_SIZES in src/lib/pricing.ts, which the
+ * calculator, the pricing section and the cards all share.
+ */
+const price = z.object({
+  amount: z.number().nonnegative(),
+  /** What one unit buys: "día", "noche", "sesión", "viaje", "perrito". */
+  unit: z.string(),
+  /** Show "desde" before the amount. */
+  from: z.boolean().default(true),
+  bySize: z.boolean().default(true),
+  note: z.string().optional(),
+});
+
 const servicios = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/servicios" }),
   schema: ({ image }) =>
@@ -27,6 +42,9 @@ const servicios = defineCollection({
       gallery: z.string().optional(),
       schedule: z.string().optional(),
       includes: z.array(z.string()).default([]),
+      price: price.optional(),
+      /** Offered in the booking calculator. Needs a `price`. */
+      quotable: z.boolean().default(true),
       /** Shown on the home page. */
       featured: z.boolean().default(false),
       order: z.number().default(99),
@@ -54,6 +72,7 @@ const eventos = defineCollection({
       coverAlt: z.string().optional(),
       gallery: z.string().optional(),
       highlights: z.array(z.string()).default([]),
+      price: price.optional(),
       featured: z.boolean().default(false),
       order: z.number().default(99),
     }),

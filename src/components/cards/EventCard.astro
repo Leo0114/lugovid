@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { FiArrowUpRight, FiClock } from "react-icons/fi";
 import Media from "@/components/ui/Media.astro";
+import PriceTag from "@/components/ui/PriceTag.astro";
 import { FREQUENCY_LABEL } from "@/lib/content";
 import { waLink } from "@/lib/contact";
 import { FaWhatsapp } from "react-icons/fa";
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const { entry, class: className = "" } = Astro.props;
-const { title, summary, when, frequency, badge, icon, tone, cover, coverAlt } = entry.data;
+const { title, summary, when, frequency, badge, icon, tone, cover, coverAlt, price } = entry.data;
 const href = `/eventos/${entry.id}`;
 const onImage = Boolean(cover);
 ---
@@ -64,6 +65,7 @@ const onImage = Boolean(cover);
     <p class:list={["mt-1.5 line-clamp-2 text-sm leading-relaxed", onImage ? "text-white/75" : "text-muted"]}>
       {summary}
     </p>
+    {price && <PriceTag price={price} surface={onImage ? "image" : "page"} class="mt-2" />}
 
     <div class="mt-4 flex items-center justify-between gap-3">
       <a
@@ -78,7 +80,7 @@ const onImage = Boolean(cover);
       <span
         class:list={[
           "inline-flex items-center gap-1 text-[13px] font-semibold transition-transform duration-300 ease-out group-hover:translate-x-0.5",
-          onImage ? "text-white" : "text-primary",
+          onImage ? "text-white" : "text-primary-ink",
         ]}
         aria-hidden="true"
       >

@@ -1,0 +1,32 @@
+---
+/**
+ * Feeds the React calculator from the `servicios` collection, so prices are
+ * edited in markdown only. Services need a `price` and `quotable: true`.
+ */
+import InteractiveBookingCalc, { type QuoteService } from "./InteractiveBookingCalc";
+import { getServicios } from "@/lib/content";
+
+interface Props {
+  /** Preselect a service, e.g. on its detail page. */
+  serviceId?: string;
+}
+
+const { serviceId } = Astro.props;
+
+const services: QuoteService[] = (await getServicios()).flatMap((s) =>
+  s.data.price && s.data.quotable
+    ? [
+        {
+          id: s.id,
+          title: s.data.title,
+          icon: s.data.icon,
+          amount: s.data.price.amount,
+          unit: s.data.price.unit,
+          bySize: s.data.price.bySize,
+        },
+      ]
+    : [],
+);
+---
+
+{services.length > 0 && <InteractiveBookingCalc client:visible services={services} defaultServiceId={serviceId} />}

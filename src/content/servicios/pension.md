@@ -7,6 +7,11 @@ tone: secondary
 order: 2
 featured: true
 schedule: "Lorem ipsum: 7:30 a 19:30"
+price:
+  amount: 280
+  unit: "noche"
+  bySize: true
+  note: "Lorem ipsum: incluye dos comidas y paseo"
 includes:
   - "Lorem ipsum dolor sit amet"
   - "Consectetur adipiscing elit"
