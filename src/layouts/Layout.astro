@@ -77,7 +77,7 @@ const ogImage = new URL(image, base).href;
     <Footer />
 
     <!-- Botón flotante de atención inmediata en la esquina inferior derecha -->
-    <FloatingSocials client:load />
+    <FloatingSocials client:load transition:persist="floating-socials" transition:animate="none" />
 
     <!-- Intersection observer scroll reveal trigger -->
     <ScrollReveal />

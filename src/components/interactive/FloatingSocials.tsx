@@ -92,16 +92,13 @@ export default function FloatingSocials() {
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Abrir canales de contacto y atención inmediata"
           aria-expanded={isOpen}
-          className="flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-secondary px-4 text-white font-bold text-sm shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/80 dark:border-panel md:px-5"
+          style={{ aspectRatio: "1 / 1" }}
+          className="flex h-14 w-14 shrink-0 aspect-square items-center justify-center rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/80 dark:border-panel"
         >
           {isOpen ? (
             <IoClose className="text-2xl" />
           ) : (
-            <>
-              <IoPaw className="text-xl text-white animate-paw" />
-              {/* Icon-only on phones so it never sits on top of slider controls. */}
-              <span className="hidden md:inline">Atención Inmediata</span>
-            </>
+            <IoPaw className="text-2xl text-white animate-paw" />
           )}
         </button>
       </div>
