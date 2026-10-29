@@ -1,0 +1,59 @@
+---
+import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
+import { waLink, TEL_HREF, PHONE_DISPLAY } from "@/lib/contact";
+
+interface Props {
+  /** Prefilled WhatsApp message. */
+  message: string;
+  /** Text on the WhatsApp button. */
+  label?: string;
+  size?: "sm" | "md";
+  /** `image` swaps to light-on-dark styling for buttons sitting on photos. */
+  surface?: "page" | "image";
+  /** Show the phone number next to the call icon. */
+  showNumber?: boolean;
+  class?: string;
+}
+
+const {
+  message,
+  label = "WhatsApp",
+  size = "md",
+  surface = "page",
+  showNumber = false,
+  class: className = "",
+} = Astro.props;
+
+const sm = size === "sm";
+---
+
+<div class:list={["relative z-10 flex items-center gap-2", className]}>
+  <a
+    href={waLink(message)}
+    target="_blank"
+    rel="noopener noreferrer"
+    class:list={[
+      "press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#25D366] font-semibold text-[#06361b] transition-colors hover:bg-[#2ee072]",
+      sm ? "h-9 px-3.5 text-[13px]" : "h-11 px-5 text-sm",
+    ]}
+  >
+    <FaWhatsapp className={sm ? "h-4 w-4" : "h-[18px] w-[18px]"} aria-hidden="true" />
+    <span>{label}</span>
+  </a>
+
+  <a
+    href={TEL_HREF}
+    aria-label={`Llamar al ${PHONE_DISPLAY}`}
+    class:list={[
+      "press inline-flex items-center justify-center gap-2 rounded-full border font-semibold transition-colors",
+      sm ? "h-9 text-[13px]" : "h-11 text-sm",
+      showNumber ? (sm ? "px-3.5" : "px-5") : sm ? "w-9" : "w-11",
+      surface === "image"
+        ? "border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white/20"
+        : "border-line bg-panel text-ink hover:border-primary/40 hover:text-primary",
+    ]}
+  >
+    <FaPhoneAlt className="h-3.5 w-3.5" aria-hidden="true" />
+    {showNumber && <span class="tabular-nums">{PHONE_DISPLAY}</span>}
+  </a>
+</div>

@@ -1,0 +1,77 @@
+---
+/**
+ * Cover image when the entry has one, otherwise a toned tile with its icon.
+ * The wrapper carries `transition:name` so the card morphs into the detail page.
+ */
+import { Image } from "astro:assets";
+import { FaPaw } from "react-icons/fa";
+import { ICONS, TONES, type IconName, type ToneName } from "@/lib/icons";
+
+interface Props {
+  cover?: ImageMetadata;
+  alt?: string;
+  icon: IconName;
+  tone: ToneName;
+  /** Shared with the detail page for the view transition. */
+  name?: string;
+  sizes?: string;
+  eager?: boolean;
+  /** Icon size step; `lg` for detail pages. */
+  iconSize?: "md" | "lg";
+  /** Cover the nearest positioned parent instead of sitting in the flow. */
+  fill?: boolean;
+  class?: string;
+}
+
+const {
+  cover,
+  alt = "",
+  icon,
+  tone,
+  name,
+  sizes = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 90vw",
+  eager = false,
+  iconSize = "md",
+  fill = false,
+  class: className = "",
+} = Astro.props;
+
+const Icon = ICONS[icon];
+---
+
+<div
+  class:list={[
+    fill ? "absolute inset-0 -z-10" : "relative isolate",
+    "overflow-hidden",
+    !cover && TONES[tone],
+    className,
+  ]}
+  transition:name={name}
+>
+  {
+    cover ? (
+      <Image
+        src={cover}
+        alt={alt}
+        widths={[480, 800, 1200]}
+        sizes={sizes}
+        loading={eager ? "eager" : "lazy"}
+        class="media-img h-full w-full object-cover"
+      />
+    ) : (
+      <>
+        <FaPaw
+          className="pointer-events-none absolute -bottom-6 -right-4 -z-10 h-32 w-32 -rotate-12 opacity-[0.08]"
+          aria-hidden="true"
+        />
+        <div class="flex h-full w-full items-center justify-center">
+          <Icon
+            className={iconSize === "lg" ? "h-20 w-20" : "h-12 w-12"}
+            aria-hidden="true"
+          />
+        </div>
+      </>
+    )
+  }
+  <slot />
+</div>

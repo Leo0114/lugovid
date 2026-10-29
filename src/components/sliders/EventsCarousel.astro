@@ -1,0 +1,55 @@
+---
+/**
+ * Rail of active events with a nudge to ask on WhatsApp or open /eventos.
+ * Pass `events` to control the list; otherwise it shows every active one.
+ */
+import type { CollectionEntry } from "astro:content";
+import CardCarousel from "./CardCarousel.astro";
+import EventCard from "@/components/cards/EventCard.astro";
+import ContactActions from "@/components/ui/ContactActions.astro";
+import { getEventos } from "@/lib/content";
+
+interface Props {
+  events?: CollectionEntry<"eventos">[];
+  title?: string;
+  description?: string;
+  href?: string | false;
+  class?: string;
+}
+
+const {
+  events,
+  title = "Lorem ipsum: eventos para tu perrito",
+  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.",
+  href = "/eventos",
+  class: className = "",
+} = Astro.props;
+
+const list = events ?? (await getEventos());
+---
+
+{
+  list.length > 0 && (
+    <CardCarousel
+      title={title}
+      description={description}
+      href={href || undefined}
+      hrefLabel="Ver todos los eventos"
+      label="Eventos"
+      class={className}
+    >
+      <ContactActions
+        slot="header"
+        class="mt-5"
+        size="sm"
+        label="Preguntar por un evento"
+        message="Hola Lugo Vid, quiero información sobre sus próximos eventos"
+      />
+      {list.map((entry) => (
+        <div class="swiper-slide">
+          <EventCard entry={entry} />
+        </div>
+      ))}
+    </CardCarousel>
+  )
+}

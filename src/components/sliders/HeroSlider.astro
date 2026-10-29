@@ -1,0 +1,213 @@
+---
+/**
+ * First block of the home page. Slides come from `src/content/hero/*.md`;
+ * toggle `active: false` to hide one. A `href: whatsapp` opens a chat
+ * prefilled with the slide title.
+ */
+import { Image } from "astro:assets";
+import "swiper/css";
+import "swiper/css/effect-fade";
+import { FiArrowRight, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa";
+import { getHeroSlides } from "@/lib/content";
+import { waLink } from "@/lib/contact";
+
+interface Props {
+  /** Milliseconds each slide stays before advancing. */
+  delay?: number;
+}
+
+const { delay = 6500 } = Astro.props;
+const slides = await getHeroSlides();
+
+const resolve = (href: string, title: string) =>
+  href === "whatsapp"
+    ? { href: waLink(`Hola Lugo Vid, vi en la página: ${title}`), external: true }
+    : { href, external: /^https?:/.test(href) };
+---
+
+{
+  slides.length > 0 && (
+    <section
+      class="hero relative isolate overflow-hidden bg-baseBlack text-white"
+      data-slider="hero"
+      data-delay={delay}
+      aria-roledescription="carrusel"
+      aria-label="Lo más destacado"
+    >
+      <div class="swiper h-[min(86svh,48rem)] min-h-[34rem]">
+        <div class="swiper-wrapper">
+          {slides.map((slide, i) => {
+            const { title, text, tag, cover, coverAlt, cta, secondary } = slide.data;
+            const main = resolve(cta.href, title);
+            const alt = secondary && resolve(secondary.href, title);
+            const Heading = i === 0 ? "h1" : "h2";
+            return (
+              <div class="swiper-slide relative isolate !flex items-end">
+                <Image
+                  src={cover}
+                  alt={coverAlt}
+                  widths={[768, 1280, 1920]}
+                  sizes="100vw"
+                  loading={i === 0 ? "eager" : "lazy"}
+                  fetchpriority={i === 0 ? "high" : "auto"}
+                  class="hero-img absolute inset-0 -z-20 h-full w-full object-cover"
+                />
+                <div
+                  class="absolute inset-0 -z-10 bg-linear-to-t from-baseBlack via-baseBlack/60 to-baseBlack/10 md:bg-linear-to-r md:from-baseBlack/90 md:via-baseBlack/55 md:to-baseBlack/0"
+                  aria-hidden="true"
+                />
+
+                <div class="container-x pb-28 md:pb-32">
+                  <div class="hero-copy max-w-2xl">
+                    {tag && (
+                      <span class="inline-flex rounded-full bg-white/12 px-3 py-1 text-[12px] font-semibold text-white ring-1 ring-white/25 backdrop-blur-md">
+                        {tag}
+                      </span>
+                    )}
+                    <Heading class="type-display mt-4 text-balance text-white">{title}</Heading>
+                    <p class="mt-4 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">{text}</p>
+
+                    <div class="mt-7 flex flex-wrap items-center gap-3">
+                      <a
+                        href={main.href}
+                        {...(main.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        class="press group inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-baseBlack transition-colors hover:bg-accent-light"
+                      >
+                        {cta.label}
+                        <FiArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" aria-hidden="true" />
+                      </a>
+                      {secondary && alt && (
+                        <a
+                          href={alt.href}
+                          {...(alt.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                          class="press inline-flex h-12 items-center gap-2 rounded-full bg-white/10 px-6 text-[15px] font-semibold text-white ring-1 ring-white/30 backdrop-blur-md transition-colors hover:bg-white/20"
+                        >
+                          {secondary.href === "whatsapp" && <FaWhatsapp className="h-[18px] w-[18px]" aria-hidden="true" />}
+                          {secondary.label}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {slides.length > 1 && (
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10">
+          {/* Controls sit bottom-left, under the copy: the bottom-right corner
+              belongs to the floating contact button. */}
+          <div class="container-x flex items-center gap-4 pb-8 md:pb-10">
+            <div class="pointer-events-auto flex gap-2" data-pagination />
+            <div class="pointer-events-auto flex gap-2">
+              <button type="button" data-prev class="hero-nav press" aria-label="Anterior">
+                <FiChevronLeft className="h-5 w-5" aria-hidden="true" />
+              </button>
+              <button type="button" data-next class="hero-nav press" aria-label="Siguiente">
+                <FiChevronRight className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
+
+<script>
+  import "@/lib/sliders";
+</script>
+
+<style>
+  .hero :global(.hero-bullet) {
+    position: relative;
+    height: 2.75rem;
+    width: 2.25rem;
+    cursor: pointer;
+  }
+  @media (min-width: 768px) {
+    .hero :global(.hero-bullet) {
+      width: 3.5rem;
+    }
+  }
+  /* Track + fill drawn on the button's middle so the hit area stays large. */
+  .hero :global(.hero-bullet)::before,
+  .hero :global(.hero-bullet span) {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 3px;
+    margin-top: -1.5px;
+    border-radius: 999px;
+  }
+  .hero :global(.hero-bullet)::before {
+    background: rgb(255 255 255 / 0.3);
+  }
+  .hero :global(.hero-bullet span) {
+    background: #fff;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .hero :global(.hero-bullet.is-active span) {
+    transform: scaleX(var(--hero-progress, 1));
+  }
+
+  .hero-nav {
+    display: inline-flex;
+    height: 2.75rem;
+    width: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #fff;
+    background: rgb(255 255 255 / 0.1);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+    backdrop-filter: blur(12px);
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+  }
+  .hero-nav:hover {
+    background: rgb(255 255 255 / 0.2);
+  }
+
+  /* One authored moment: the active photo settles in while its copy rises. */
+  .hero-img {
+    transform: scale(1.08);
+    transition: transform 7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hero :global(.swiper-slide-active) .hero-img {
+    transform: scale(1);
+  }
+  .hero-copy {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    filter: blur(6px);
+    transition:
+      opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
+      transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
+      filter 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  }
+  .hero :global(.swiper-slide-active) .hero-copy,
+  .hero:not(:has(.swiper-initialized)) .swiper-slide:first-child .hero-copy {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  /* Before Swiper boots (or without JS) only the first slide shows. */
+  .hero:not(:has(.swiper-initialized)) .swiper-slide:not(:first-child) {
+    display: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-img,
+    .hero-copy {
+      transition: opacity 0.2s ease;
+      transform: none;
+      filter: none;
+    }
+  }
+</style>

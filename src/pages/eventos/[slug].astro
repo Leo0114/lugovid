@@ -1,0 +1,152 @@
+---
+import { getCollection, render } from "astro:content";
+import { FiArrowLeft, FiCalendar, FiClock, FiMapPin, FiStar } from "react-icons/fi";
+import Layout from "@/layouts/Layout.astro";
+import Media from "@/components/ui/Media.astro";
+import ContactActions from "@/components/ui/ContactActions.astro";
+import Gallery from "@/components/shared/Gallery.astro";
+import EventsCarousel from "@/components/sliders/EventsCarousel.astro";
+import { FREQUENCY_LABEL, getEventos } from "@/lib/content";
+
+export const prerender = true;
+
+// Inactive events still get a page so shared links don't 404; they just say so.
+export async function getStaticPaths() {
+  const eventos = await getCollection("eventos");
+  return eventos.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const {
+  title,
+  summary,
+  active,
+  frequency,
+  when,
+  date,
+  location,
+  badge,
+  icon,
+  tone,
+  cover,
+  coverAlt,
+  highlights,
+  gallery,
+} = entry.data;
+const { Content } = await render(entry);
+const others = (await getEventos()).filter((e) => e.id !== entry.id);
+
+const dateLabel = date
+  ? new Intl.DateTimeFormat("es-MX", { weekday: "long", day: "numeric", month: "long" }).format(date)
+  : null;
+
+const facts = [
+  { icon: FiCalendar, label: FREQUENCY_LABEL[frequency] + (dateLabel ? ` · ${dateLabel}` : "") },
+  { icon: FiClock, label: when },
+  location && { icon: FiMapPin, label: location },
+].filter(Boolean) as { icon: typeof FiClock; label: string }[];
+---
+
+<Layout title={`${title} | Eventos Lugo Vid`} description={summary} image={cover?.src} imageAlt={coverAlt ?? title} type="article">
+  <article>
+    <header class="container-x pt-8 md:pt-12">
+      <a
+        href="/eventos"
+        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-primary"
+      >
+        <FiArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true" />
+        Eventos
+      </a>
+
+      <div class="mt-6 grid items-center gap-8 md:grid-cols-2 lg:gap-14">
+        <Media
+          cover={cover}
+          alt={coverAlt ?? title}
+          icon={icon}
+          tone={tone}
+          iconSize="lg"
+          eager
+          sizes="(min-width: 768px) 50vw, 100vw"
+          name={`evento-media-${entry.id}`}
+          class="aspect-[4/5] rounded-2xl shadow-e2 md:order-2"
+        />
+
+        <div>
+          <span
+            class:list={[
+              "inline-flex rounded-full px-3 py-1 text-[12px] font-semibold",
+              active ? "bg-accent/15 text-amber-700 dark:text-accent" : "bg-panel-alt text-muted",
+            ]}
+          >
+            {active ? (badge ?? FREQUENCY_LABEL[frequency]) : "Sin fecha por ahora"}
+          </span>
+          <h1 class="type-display mt-4 text-balance text-ink" transition:name={`evento-title-${entry.id}`}>
+            {title}
+          </h1>
+          <p class="type-subheading mt-4 max-w-xl text-muted">{summary}</p>
+
+          <ul class="mt-6 space-y-2">
+            {facts.map(({ icon: Icon, label }) => (
+              <li class="flex items-center gap-2.5 text-sm font-medium text-ink">
+                <Icon className="h-4 w-4 shrink-0 text-secondary" aria-hidden="true" />
+                <span class="first-letter:uppercase">{label}</span>
+              </li>
+            ))}
+          </ul>
+
+          <ContactActions
+            class="mt-7"
+            label={active ? "Apartar lugar" : "Avísenme"}
+            message={
+              active
+                ? `Hola Lugo Vid, quiero apartar lugar para mi perrito en: ${title}`
+                : `Hola Lugo Vid, ¿cuándo vuelve el evento ${title}?`
+            }
+            showNumber
+          />
+        </div>
+      </div>
+    </header>
+
+    <div class="container-x section-y grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+      <div class="prose prose-slate max-w-[68ch] dark:prose-invert prose-headings:tracking-tight prose-a:text-primary">
+        <Content />
+      </div>
+
+      {
+        highlights.length > 0 && (
+          <aside class="h-fit rounded-2xl bg-panel-alt p-6 lg:sticky lg:top-28">
+            <h2 class="text-base font-bold text-ink">Lo que habrá</h2>
+            <ul class="mt-4 space-y-3">
+              {highlights.map((item) => (
+                <li class="flex items-start gap-2.5 text-sm text-ink/85">
+                  <FiStar className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )
+      }
+    </div>
+
+    {
+      gallery && (
+        <section class="container-x pb-16 md:pb-24">
+          <h2 class="type-title mb-8 text-ink">Así se vive</h2>
+          <Gallery name={gallery} layout="mosaic" />
+        </section>
+      )
+    }
+  </article>
+
+  {
+    others.length > 0 && (
+      <section class="section-y bg-canvas-alt">
+        <div class="container-x">
+          <EventsCarousel events={others} title="Más eventos" description="" />
+        </div>
+      </section>
+    )
+  }
+</Layout>

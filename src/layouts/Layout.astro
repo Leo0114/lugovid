@@ -5,16 +5,33 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import FloatingSocials from "../components/interactive/FloatingSocials";
 import ScrollReveal from "../components/shared/ScrollReveal.astro";
+import AnnouncementBar from "../components/shared/AnnouncementBar.astro";
+import { SEO } from "astro-seo";
 
 interface Props {
   title?: string;
   description?: string;
+  /** Social share image: a local asset (`cover.src`) or an absolute URL. */
+  image?: string;
+  imageAlt?: string;
+  /** `article` for detail pages. */
+  type?: "website" | "article";
+  noindex?: boolean;
 }
 
 const {
   title = "Lugo Vid | Guardería & Pensión Canina en Colima",
   description = "Guardería canina, pensión, paseos, baños, transporte y mucha diversión en Colima. Atención amorosa y profesional para tu mascota.",
+  image = "/logo.png",
+  imageAlt = "Lugo Vid, estancia canina en Colima",
+  type = "website",
+  noindex = false,
 } = Astro.props;
+
+// Absolute URLs for crawlers; `site` comes from astro.config.mjs.
+const base = Astro.site ?? Astro.url;
+const canonical = new URL(Astro.url.pathname, base);
+const ogImage = new URL(image, base).href;
 ---
 
 <!doctype html>
@@ -25,14 +42,18 @@ const {
     <link rel="icon" type="image/png" href="/ico.png" />
     <ClientRouter />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-
-    <!-- Open Graph / Social Sharing -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logo.png" />
+    <SEO
+      title={title}
+      description={description}
+      canonical={canonical}
+      noindex={noindex}
+      openGraph={{
+        basic: { title, type, image: ogImage, url: canonical },
+        optional: { description, siteName: "Lugo Vid", locale: "es_MX" },
+        image: { alt: imageAlt },
+      }}
+      twitter={{ card: "summary_large_image", title, description, image: ogImage, imageAlt }}
+    />
 
     <!-- Dark Mode Initializer Script (No-flash) -->
     <script is:inline>
@@ -46,6 +67,7 @@ const {
     </script>
   </head>
   <body class="min-h-screen flex flex-col bg-canvas text-ink antialiased selection:bg-primary/20 selection:text-primary transition-colors duration-300">
+    <AnnouncementBar />
     <Navbar />
 
     <main class="flex-1">

@@ -48,7 +48,7 @@ export default function FloatingSocials() {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-50 flex flex-col items-end gap-3 select-none">
+    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-50 flex flex-col items-end gap-3 select-none">
       {/* Expanded Menu */}
       {isOpen && (
         <div className="flex flex-col gap-2.5 mb-2 bg-panel/95 backdrop-blur-md p-3.5 rounded-2xl shadow-2xl border border-line animate-in fade-in slide-in-from-bottom-4 duration-200 min-w-[240px]">
@@ -91,15 +91,17 @@ export default function FloatingSocials() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Abrir canales de contacto y atención inmediata"
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/80 dark:border-panel"
+          aria-expanded={isOpen}
+          className="flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-secondary px-4 text-white font-bold text-sm shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/80 dark:border-panel md:px-5"
         >
           {isOpen ? (
             <IoClose className="text-2xl" />
           ) : (
-            <div className="flex items-center gap-2">
-              <IoPaw className="text-lg text-white animate-paw" />
-              <span>Atención Inmediata</span>
-            </div>
+            <>
+              <IoPaw className="text-xl text-white animate-paw" />
+              {/* Icon-only on phones so it never sits on top of slider controls. */}
+              <span className="hidden md:inline">Atención Inmediata</span>
+            </>
           )}
         </button>
       </div>

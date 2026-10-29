@@ -1,0 +1,112 @@
+---
+/**
+ * Site notice from `src/content/avisos/*.md` (closures, schedule changes,
+ * this week's event). Shows the first active one by `order`.
+ *
+ *   variant="bar"     full-width strip above the navbar (Layout renders it)
+ *   variant="inline"  rounded callout to drop inside any page section
+ *
+ * Dismissing is remembered per notice id, so editing the text of a notice
+ * under a new file name shows it again to everyone.
+ */
+import type { CollectionEntry } from "astro:content";
+import { FiArrowRight, FiX, FiInfo, FiAlertTriangle, FiGift } from "react-icons/fi";
+import { getAvisos } from "@/lib/content";
+
+interface Props {
+  aviso?: CollectionEntry<"avisos">;
+  variant?: "bar" | "inline";
+  class?: string;
+}
+
+const { variant = "bar", class: className = "" } = Astro.props;
+const aviso = Astro.props.aviso ?? (await getAvisos())[0];
+
+const TONE = {
+  info: { icon: FiInfo, cls: "bg-primary-dark text-white", link: "text-white" },
+  promo: { icon: FiGift, cls: "bg-accent text-baseBlack", link: "text-baseBlack" },
+  alerta: { icon: FiAlertTriangle, cls: "bg-rose-700 text-white", link: "text-white" },
+} as const;
+
+const tone = aviso && TONE[aviso.data.tone];
+const Icon = tone?.icon;
+const storageKey = aviso ? `aviso-cerrado:${aviso.id}` : "";
+const external = aviso?.data.link && /^https?:/.test(aviso.data.link.href);
+---
+
+{
+  aviso && tone && Icon && (
+    <aside
+      data-aviso={storageKey}
+      aria-label="Aviso"
+      class:list={[
+        "relative text-sm",
+        tone.cls,
+        variant === "inline" && "rounded-2xl shadow-e1",
+        className,
+      ]}
+    >
+      <div
+        class:list={[
+          "flex items-center gap-3",
+          variant === "bar" ? "container-x min-h-11 py-2" : "px-5 py-4",
+        ]}
+      >
+        <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <p class="min-w-0 flex-1 font-medium leading-snug">
+          {aviso.data.text}
+          {aviso.data.link && (
+            <a
+              href={aviso.data.link.href}
+              {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              class:list={["group ml-1.5 inline-flex items-center gap-1 whitespace-nowrap font-bold underline", tone.link]}
+            >
+              {aviso.data.link.label}
+              <FiArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+            </a>
+          )}
+        </p>
+        {aviso.data.dismissible && (
+          <button
+            type="button"
+            data-aviso-close
+            aria-label="Cerrar aviso"
+            class="press -mr-2 inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full hover:bg-black/10"
+          >
+            <FiX className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
+      </div>
+    </aside>
+  )
+}
+
+{/* Runs inline right after the markup so a dismissed notice never flashes. */}
+<script is:inline>
+  (() => {
+    const read = (k) => {
+      try {
+        return localStorage.getItem(k);
+      } catch {
+        return null;
+      }
+    };
+    document.querySelectorAll("[data-aviso]").forEach((el) => {
+      if (read(el.dataset.aviso)) el.remove();
+    });
+  })();
+</script>
+
+<script>
+  document.addEventListener("click", (event) => {
+    const btn = (event.target as Element | null)?.closest("[data-aviso-close]");
+    const bar = btn?.closest<HTMLElement>("[data-aviso]");
+    if (!bar) return;
+    try {
+      localStorage.setItem(bar.dataset.aviso!, "1");
+    } catch {
+      /* private mode: closes for this page view only */
+    }
+    bar.remove();
+  });
+</script>

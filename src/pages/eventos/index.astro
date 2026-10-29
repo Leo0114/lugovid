@@ -1,0 +1,71 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import PageHero from "@/components/shared/PageHero.astro";
+import Gallery from "@/components/shared/Gallery.astro";
+import CtaSection from "@/components/shared/CtaSection.astro";
+import SectionHeader from "@/components/shared/SectionHeader.astro";
+import EventsBrowser from "@/components/events/EventsBrowser.astro";
+import ContactActions from "@/components/ui/ContactActions.astro";
+import OffersCarousel from "@/components/sliders/OffersCarousel.astro";
+import { getEventos } from "@/lib/content";
+import { waLink, TEL_HREF } from "@/lib/contact";
+
+const eventos = await getEventos();
+
+---
+
+<Layout
+  title="Eventos Caninos | Lugo Vid Colima"
+  description="Eventos semanales, mensuales y fechas especiales para perritos en Colima: pool days, socialización, cumpleaños y Summer Fest. WhatsApp 312 593 8264"
+>
+  <PageHero
+    title="Eventos para perritos felices"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+  >
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <ContactActions label="Preguntar por un evento" message="Hola Lugo Vid, quiero información sobre sus próximos eventos" />
+      <a href="#ofertas" class="text-sm font-semibold text-primary underline">Ver ofertas</a>
+    </div>
+  </PageHero>
+
+  <section class="section-y bg-canvas-alt" id="calendario">
+    <div class="container-x">
+      {
+        eventos.length > 0 ? (
+          <EventsBrowser events={eventos} />
+        ) : (
+          <div class="mx-auto max-w-xl text-center">
+            <h2 class="type-title text-ink">Estamos preparando lo que sigue</h2>
+            <p class="type-body mt-3 text-muted">
+              Ahora mismo no hay eventos activos. Escríbenos y te avisamos del próximo.
+            </p>
+            <ContactActions class="mt-6 justify-center" label="Avísenme" message="Hola Lugo Vid, ¿cuándo es su próximo evento?" />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section-y scroll-mt-20 bg-canvas" id="ofertas">
+    <div class="container-x">
+      <OffersCarousel />
+    </div>
+  </section>
+
+  <section class="section-y bg-canvas-alt">
+    <div class="container-x">
+      <SectionHeader title="Así se viven" description="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod." class="mb-10" />
+      <Gallery name="gall/try" layout="mosaic" />
+    </div>
+  </section>
+
+  <CtaSection
+    title="Cupo limitado en cada evento"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    primaryLabel="Apartar lugar por WhatsApp"
+    primaryHref={waLink("Hola Lugo Vid, deseo apartar el lugar de mi perrito para el próximo evento")}
+    primaryExternal={true}
+    secondaryLabel="Llamar ahora"
+    secondaryHref={TEL_HREF}
+  />
+</Layout>

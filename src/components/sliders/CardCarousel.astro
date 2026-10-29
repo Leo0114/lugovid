@@ -1,0 +1,137 @@
+---
+/**
+ * Horizontal card rail. Wrap each card in `<div class="swiper-slide">`.
+ *
+ *   <CardCarousel title="Eventos" href="/eventos">
+ *     {items.map((e) => <div class="swiper-slide"><EventCard entry={e} /></div>)}
+ *   </CardCarousel>
+ */
+import "swiper/css";
+import { FiArrowRight, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** "See all" link next to the arrows. */
+  href?: string;
+  hrefLabel?: string;
+  /** Slide width step: `sm` for compact cards, `lg` for wide ones. */
+  size?: "sm" | "md" | "lg";
+  label?: string;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  href,
+  hrefLabel = "Ver todos",
+  size = "md",
+  label,
+  class: className = "",
+} = Astro.props;
+
+const SIZE = {
+  sm: "rail-sm",
+  md: "rail-md",
+  lg: "rail-lg",
+} as const;
+---
+
+<div
+  class:list={["rail", SIZE[size], className]}
+  data-slider="cards"
+  aria-roledescription="carrusel"
+  aria-label={label ?? title}
+>
+  <div class="mb-6 flex items-end justify-between gap-6 md:mb-8">
+    <div class="max-w-2xl">
+      {title && <h2 class="type-title text-balance text-ink">{title}</h2>}
+      {description && <p class="type-body mt-3 text-muted">{description}</p>}
+      <slot name="header" />
+    </div>
+
+    <div class="flex shrink-0 items-center gap-2">
+      {
+        href && (
+          <a
+            href={href}
+            class="group mr-1 hidden items-center gap-1.5 text-sm font-semibold text-primary sm:inline-flex"
+          >
+            {hrefLabel}
+            <FiArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" aria-hidden="true" />
+          </a>
+        )
+      }
+      <button type="button" data-prev class="rail-nav press max-sm:!hidden" aria-label="Anterior">
+        <FiChevronLeft className="h-5 w-5" aria-hidden="true" />
+      </button>
+      <button type="button" data-next class="rail-nav press max-sm:!hidden" aria-label="Siguiente">
+        <FiChevronRight className="h-5 w-5" aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Bleeds to the right edge on small screens so the next card peeks in. -->
+  <div class="swiper !overflow-visible">
+    <div class="swiper-wrapper">
+      <slot />
+    </div>
+  </div>
+
+  {
+    href && (
+      <a href={href} class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary sm:hidden">
+        {hrefLabel}
+        <FiArrowRight className="h-4 w-4" aria-hidden="true" />
+      </a>
+    )
+  }
+</div>
+
+<script>
+  import "@/lib/sliders";
+</script>
+
+<style>
+  .rail :global(.swiper-slide) {
+    height: auto;
+  }
+  .rail-sm :global(.swiper-slide) {
+    width: min(68vw, 16rem);
+  }
+  .rail-md :global(.swiper-slide) {
+    width: min(78vw, 20rem);
+  }
+  .rail-lg :global(.swiper-slide) {
+    width: min(86vw, 30rem);
+  }
+
+  .rail-nav {
+    display: inline-flex;
+    height: 2.75rem;
+    width: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--color-ink);
+    background: var(--color-panel);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      opacity 0.2s ease;
+    cursor: pointer;
+  }
+  .rail-nav:hover {
+    color: var(--color-primary);
+    background: var(--color-panel-alt);
+  }
+  .rail-nav:global(.is-disabled) {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .rail-nav:global(.is-locked) {
+    display: none;
+  }
+</style>

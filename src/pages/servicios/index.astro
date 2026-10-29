@@ -1,0 +1,121 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import PageHero from "@/components/shared/PageHero.astro";
+import CtaSection from "@/components/shared/CtaSection.astro";
+import SectionHeader from "@/components/shared/SectionHeader.astro";
+import ServiceCard from "@/components/cards/ServiceCard.astro";
+import ContactActions from "@/components/ui/ContactActions.astro";
+import OffersCarousel from "@/components/sliders/OffersCarousel.astro";
+import InteractiveBookingCalc from "@/components/interactive/InteractiveBookingCalc";
+import { FiChevronDown } from "react-icons/fi";
+import { getServicios } from "@/lib/content";
+import { waLink, TEL_HREF, PHONE_DISPLAY } from "@/lib/contact";
+
+const servicios = await getServicios();
+
+const faqs = [
+  {
+    q: "¿Qué requisitos necesita mi perrito para ingresar a guardería o pensión?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  },
+  {
+    q: "¿Cómo son los reportes que envían a los dueños por WhatsApp?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+  },
+  {
+    q: "¿Qué pasa si mi mascota tiene una dieta especial o medicamentos?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.",
+  },
+  {
+    q: "¿Hacen paseos individuales o grupales?",
+    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.",
+  },
+];
+---
+
+<Layout
+  title="Servicios Caninos | Lugo Vid Guardería & Pensión Colima"
+  description="Servicios completos para tu perro: Guardería canina, pensión, paseos, baños spa, transporte y mucha diversión en Colima. WhatsApp 312 593 8264"
+>
+  <PageHero
+    title="Servicios para tu perrito"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+  >
+    <ContactActions
+      class="mt-8"
+      label="Consultar por WhatsApp"
+      message="Hola Lugo Vid, me gustaría información sobre sus servicios"
+      showNumber
+    />
+  </PageHero>
+
+  <section class="section-y bg-canvas-alt">
+    <div class="container-x">
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        {servicios.map((entry) => <ServiceCard entry={entry} class="reveal" />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y bg-canvas" id="ofertas">
+    <div class="container-x">
+      <OffersCarousel />
+    </div>
+  </section>
+
+  <section class="section-y bg-canvas-alt" id="cotizador-servicios">
+    <div class="container-x">
+      <SectionHeader
+        align="center"
+        title="Cotiza tu paquete en segundos"
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt."
+        class="mb-10"
+      />
+      <div class="mx-auto max-w-5xl">
+        <InteractiveBookingCalc client:visible />
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y bg-canvas">
+    <div class="container-x max-w-3xl">
+      <SectionHeader align="center" title="Preguntas frecuentes" class="mb-10" />
+
+      <div class="divide-y divide-line rounded-2xl bg-panel shadow-e1 ring-1 ring-line">
+        {
+          faqs.map((faq) => (
+            <details class="group px-5 md:px-6">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                {faq.q}
+                <FiChevronDown
+                  className="h-5 w-5 shrink-0 text-muted transition-transform duration-300 group-open:rotate-180 group-open:text-primary"
+                  aria-hidden="true"
+                />
+              </summary>
+              <p class="pb-5 text-sm leading-relaxed text-muted md:text-base">{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <p class="mt-6 text-center text-sm text-muted">
+        ¿Otra duda?
+        <a href={waLink("Hola Lugo Vid, tengo una pregunta")} target="_blank" rel="noopener noreferrer" class="font-semibold text-primary underline">
+          Escríbenos
+        </a>
+        o llama al
+        <a href={TEL_HREF} class="font-semibold text-primary underline tabular-nums">{PHONE_DISPLAY}</a>.
+      </p>
+    </div>
+  </section>
+
+  <CtaSection
+    title="Tu perrito merece los mejores cuidados"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    primaryLabel="Escríbenos por WhatsApp"
+    primaryHref={waLink("Hola Lugo Vid, deseo agendar servicios para mi perrito")}
+    primaryExternal={true}
+    secondaryLabel="Llamar ahora"
+    secondaryHref={TEL_HREF}
+  />
+</Layout>

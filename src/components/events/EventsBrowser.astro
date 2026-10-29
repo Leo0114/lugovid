@@ -1,0 +1,135 @@
+---
+/**
+ * Filterable grid of events: Todos / Cada semana / Cada mes / Fechas especiales.
+ * Without JS every event shows. The active filter lives in `?tipo=` so a
+ * filtered view can be shared.
+ */
+import type { CollectionEntry } from "astro:content";
+import EventCard from "@/components/cards/EventCard.astro";
+
+type Evento = CollectionEntry<"eventos">;
+
+interface Props {
+  events: Evento[];
+  class?: string;
+}
+
+const { events, class: className = "" } = Astro.props;
+
+const groupOf = (e: Evento) =>
+  e.data.frequency === "anual" || e.data.frequency === "unico" ? "especiales" : e.data.frequency;
+
+const FILTERS = [
+  { id: "todos", label: "Todos" },
+  { id: "semanal", label: "Cada semana" },
+  { id: "mensual", label: "Cada mes" },
+  { id: "especiales", label: "Fechas especiales" },
+];
+
+const filters = FILTERS.map((f) => ({
+  ...f,
+  count: f.id === "todos" ? events.length : events.filter((e) => groupOf(e) === f.id).length,
+})).filter((f) => f.count > 0);
+---
+
+<div data-events-browser class={className}>
+  <div
+    role="toolbar"
+    aria-label="Filtrar eventos"
+    class="-mx-4 mb-8 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:px-0"
+  >
+    {
+      filters.map((f, i) => (
+        <button
+          type="button"
+          data-filter={f.id}
+          aria-pressed={i === 0 ? "true" : "false"}
+          class="filter-pill press inline-flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full px-4 text-sm font-semibold"
+        >
+          {f.label}
+          <span class="filter-count rounded-full px-1.5 text-[11px] tabular-nums">{f.count}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <ul class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+    {
+      events.map((entry) => (
+        <li data-group={groupOf(entry)}>
+          <EventCard entry={entry} />
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  const VALID = new Set(["todos", "semanal", "mensual", "especiales"]);
+
+  function apply(root: HTMLElement, filter: string) {
+    root.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((btn) => {
+      btn.setAttribute("aria-pressed", String(btn.dataset.filter === filter));
+    });
+    root.querySelectorAll<HTMLElement>("[data-group]").forEach((item) => {
+      item.hidden = filter !== "todos" && item.dataset.group !== filter;
+    });
+  }
+
+  function select(root: HTMLElement, filter: string) {
+    const url = new URL(location.href);
+    if (filter === "todos") url.searchParams.delete("tipo");
+    else url.searchParams.set("tipo", filter);
+    history.replaceState(history.state, "", url);
+
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Cards already carry view-transition names, so they glide into place.
+    if (!still && document.startViewTransition) {
+      document.startViewTransition(() => apply(root, filter));
+    } else {
+      apply(root, filter);
+    }
+  }
+
+  // Delegated once; survives ClientRouter navigations.
+  document.addEventListener("click", (event) => {
+    const btn = (event.target as Element | null)?.closest<HTMLButtonElement>("[data-filter]");
+    const root = btn?.closest<HTMLElement>("[data-events-browser]");
+    if (btn && root && btn.getAttribute("aria-pressed") !== "true") select(root, btn.dataset.filter!);
+  });
+
+  function init() {
+    const wanted = new URLSearchParams(location.search).get("tipo") ?? "todos";
+    document.querySelectorAll<HTMLElement>("[data-events-browser]").forEach((root) => {
+      const available = root.querySelector(`[data-filter="${wanted}"]`);
+      apply(root, VALID.has(wanted) && available ? wanted : "todos");
+    });
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>
+
+<style>
+  .filter-pill {
+    color: var(--color-ink);
+    background: var(--color-panel);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+  .filter-pill:hover {
+    color: var(--color-primary);
+  }
+  .filter-pill .filter-count {
+    background: var(--color-panel-alt);
+    color: var(--color-muted);
+  }
+  .filter-pill[aria-pressed="true"] {
+    color: #fff;
+    background: var(--color-primary-dark, #1b7393);
+    box-shadow: none;
+  }
+  .filter-pill[aria-pressed="true"] .filter-count {
+    background: rgb(255 255 255 / 0.2);
+    color: #fff;
+  }
+</style>

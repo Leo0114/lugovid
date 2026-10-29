@@ -1,0 +1,120 @@
+---
+import { render } from "astro:content";
+import { FiArrowLeft, FiCheck, FiClock } from "react-icons/fi";
+import Layout from "@/layouts/Layout.astro";
+import Media from "@/components/ui/Media.astro";
+import ContactActions from "@/components/ui/ContactActions.astro";
+import Gallery from "@/components/shared/Gallery.astro";
+import CardCarousel from "@/components/sliders/CardCarousel.astro";
+import ServiceCard from "@/components/cards/ServiceCard.astro";
+import { getServicios } from "@/lib/content";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const servicios = await getServicios();
+  return servicios.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { title, summary, badge, icon, tone, cover, coverAlt, schedule, includes, gallery } = entry.data;
+const { Content } = await render(entry);
+const others = (await getServicios()).filter((s) => s.id !== entry.id);
+const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
+---
+
+<Layout title={`${title} | Lugo Vid Colima`} description={summary} image={cover?.src} imageAlt={coverAlt ?? title} type="article">
+  <article>
+    <header class="container-x pt-8 md:pt-12">
+      <a
+        href="/servicios"
+        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-primary"
+      >
+        <FiArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true" />
+        Servicios
+      </a>
+
+      <div class="mt-6 grid items-center gap-8 md:grid-cols-2 lg:gap-14">
+        <Media
+          cover={cover}
+          alt={coverAlt ?? title}
+          icon={icon}
+          tone={tone}
+          iconSize="lg"
+          eager
+          sizes="(min-width: 768px) 50vw, 100vw"
+          name={`servicio-media-${entry.id}`}
+          class="aspect-[4/3] rounded-2xl shadow-e2 md:order-2 md:aspect-[4/5]"
+        />
+
+        <div>
+          {badge && (
+            <span class="inline-flex rounded-full bg-primary/10 px-3 py-1 text-[12px] font-semibold text-primary dark:bg-primary/20">
+              {badge}
+            </span>
+          )}
+          <h1 class="type-display mt-4 text-balance text-ink" transition:name={`servicio-title-${entry.id}`}>
+            {title}
+          </h1>
+          <p class="type-subheading mt-4 max-w-xl text-muted">{summary}</p>
+
+          {schedule && (
+            <p class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ink">
+              <FiClock className="h-4 w-4 text-secondary" aria-hidden="true" />
+              {schedule}
+            </p>
+          )}
+
+          <ContactActions class="mt-7" label="Reservar por WhatsApp" message={message} showNumber />
+        </div>
+      </div>
+    </header>
+
+    <div class="container-x section-y grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+      <div class="prose prose-slate max-w-[68ch] dark:prose-invert prose-headings:tracking-tight prose-a:text-primary">
+        <Content />
+      </div>
+
+      {
+        includes.length > 0 && (
+          <aside class="h-fit rounded-2xl bg-panel-alt p-6 lg:sticky lg:top-28">
+            <h2 class="text-base font-bold text-ink">Incluye</h2>
+            <ul class="mt-4 space-y-3">
+              {includes.map((item) => (
+                <li class="flex items-start gap-2.5 text-sm text-ink/85">
+                  <FiCheck className="mt-0.5 h-4 w-4 shrink-0 text-secondary" aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )
+      }
+    </div>
+
+    {
+      gallery && (
+        <section class="container-x pb-16 md:pb-24">
+          <h2 class="type-title mb-8 text-ink">Galería</h2>
+          <Gallery name={gallery} layout="mosaic" />
+        </section>
+      )
+    }
+  </article>
+
+  {
+    others.length > 0 && (
+      <section class="section-y bg-canvas-alt">
+        <div class="container-x">
+          <CardCarousel title="Otros servicios" href="/servicios" hrefLabel="Ver todos">
+            {others.map((s) => (
+              <div class="swiper-slide">
+                <ServiceCard entry={s} />
+              </div>
+            ))}
+          </CardCarousel>
+        </div>
+      </section>
+    )
+  }
+</Layout>

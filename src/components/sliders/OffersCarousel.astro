@@ -1,0 +1,38 @@
+---
+/**
+ * Active offers from `src/content/ofertas`. Renders nothing when none are on,
+ * so it can stay on any page and appear only while a promotion runs.
+ */
+import CardCarousel from "./CardCarousel.astro";
+import OfferCard from "@/components/cards/OfferCard.astro";
+import { getOfertas } from "@/lib/content";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Only the weekly ones. */
+  weeklyOnly?: boolean;
+  class?: string;
+}
+
+const {
+  title = "Lorem ipsum: promociones vigentes",
+  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod.",
+  weeklyOnly = false,
+  class: className = "",
+} = Astro.props;
+
+const offers = (await getOfertas()).filter((o) => !weeklyOnly || o.data.weekly);
+---
+
+{
+  offers.length > 0 && (
+    <CardCarousel title={title} description={description} size="lg" label="Ofertas" class={className}>
+      {offers.map((entry) => (
+        <div class="swiper-slide">
+          <OfferCard entry={entry} />
+        </div>
+      ))}
+    </CardCarousel>
+  )
+}

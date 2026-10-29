@@ -1,0 +1,77 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import { FaWhatsapp } from "react-icons/fa";
+import { waLink } from "@/lib/contact";
+
+interface Props {
+  entry: CollectionEntry<"ofertas">;
+  class?: string;
+}
+
+const { entry, class: className = "" } = Astro.props;
+const { title, summary, weekly, price, priceNote, validUntil, cover, coverAlt, message } = entry.data;
+
+const until = validUntil
+  ? new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "long" }).format(validUntil)
+  : null;
+---
+
+<article
+  class:list={[
+    "lift group relative isolate flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-2xl bg-baseBlack p-5 text-white shadow-e1 sm:aspect-[5/4]",
+    className,
+  ]}
+>
+  <Image
+    src={cover}
+    alt={coverAlt ?? title}
+    widths={[480, 800, 1200]}
+    sizes="(min-width: 1024px) 34rem, 85vw"
+    loading="lazy"
+    class="media-img absolute inset-0 -z-20 h-full w-full object-cover"
+  />
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 bg-linear-to-tr from-baseBlack/95 via-baseBlack/70 to-baseBlack/20"
+    aria-hidden="true"
+  />
+
+  <div class="flex items-start justify-between gap-3">
+    <span
+      class:list={[
+        "rounded-full px-2.5 py-1 text-[11px] font-semibold",
+        weekly ? "bg-accent text-baseBlack" : "bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-md",
+      ]}
+    >
+      {weekly ? "Oferta de la semana" : "Promoción"}
+    </span>
+    {until && <span class="text-[12px] font-medium text-white/70">Hasta el {until}</span>}
+  </div>
+
+  <div>
+    {
+      price && (
+        <p class="text-5xl font-extrabold leading-none tracking-[-0.03em] text-accent tabular-nums">
+          {price}
+          {priceNote && (
+            <span class="ml-2 align-middle text-[13px] font-semibold tracking-normal text-white/70">
+              {priceNote}
+            </span>
+          )}
+        </p>
+      )
+    }
+    <h3 class="type-heading mt-3 text-balance">{title}</h3>
+    <p class="mt-1 line-clamp-2 max-w-sm text-sm leading-relaxed text-white/75">{summary}</p>
+
+    <a
+      href={waLink(message ?? `Hola Lugo Vid, me interesa la promoción: ${title}`)}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="press mt-4 inline-flex h-10 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-baseBlack transition-colors hover:bg-accent-light"
+    >
+      <FaWhatsapp className="h-4 w-4 text-[#128C7E]" aria-hidden="true" />
+      La quiero
+    </a>
+  </div>
+</article>

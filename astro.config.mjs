@@ -11,8 +11,6 @@ import sitemap from '@astrojs/sitemap';
 
 import robotsTxt from 'astro-robots-txt';
 
-import icon from 'astro-icon';
-
 
 export default defineConfig({
   site: 'https://basic.com',
@@ -23,7 +21,6 @@ export default defineConfig({
 
   integrations: [
     react(),
-    icon(),
     robotsTxt(),
     sitemap({
       i18n: {

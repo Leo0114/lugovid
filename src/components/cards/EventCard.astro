@@ -1,0 +1,90 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { FiArrowUpRight, FiClock } from "react-icons/fi";
+import Media from "@/components/ui/Media.astro";
+import { FREQUENCY_LABEL } from "@/lib/content";
+import { waLink } from "@/lib/contact";
+import { FaWhatsapp } from "react-icons/fa";
+
+interface Props {
+  entry: CollectionEntry<"eventos">;
+  class?: string;
+}
+
+const { entry, class: className = "" } = Astro.props;
+const { title, summary, when, frequency, badge, icon, tone, cover, coverAlt } = entry.data;
+const href = `/eventos/${entry.id}`;
+const onImage = Boolean(cover);
+---
+
+<article
+  class:list={[
+    "lift group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl shadow-e1",
+    onImage ? "bg-baseBlack text-white" : "bg-panel text-ink ring-1 ring-line",
+    className,
+  ]}
+>
+  <Media
+    cover={cover}
+    alt={coverAlt ?? title}
+    icon={icon}
+    tone={tone}
+    name={`evento-media-${entry.id}`}
+    sizes="(min-width: 1024px) 26rem, 80vw"
+    fill
+    class:list={[!onImage && "[&>div]:pb-40"]}
+  />
+
+  {onImage && (
+    <div
+      class="pointer-events-none absolute inset-0 -z-10 bg-linear-to-t from-baseBlack from-20% via-baseBlack/70 via-50% to-baseBlack/0"
+      aria-hidden="true"
+    />
+  )}
+
+  <span
+    class:list={[
+      "absolute left-4 top-4 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md",
+      onImage ? "bg-white/15 text-white ring-1 ring-white/25" : "bg-panel/90 text-ink ring-1 ring-line",
+    ]}
+  >
+    {badge ?? FREQUENCY_LABEL[frequency]}
+  </span>
+
+  <div class="p-5">
+    <p class:list={["flex items-center gap-1.5 text-[13px] font-medium", onImage ? "text-white/80" : "text-muted"]}>
+      <FiClock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      {when}
+    </p>
+    <h3 class="type-heading mt-1.5 text-balance" transition:name={`evento-title-${entry.id}`}>
+      <a href={href} class="outline-none after:absolute after:inset-0 after:content-['']">
+        {title}
+      </a>
+    </h3>
+    <p class:list={["mt-1.5 line-clamp-2 text-sm leading-relaxed", onImage ? "text-white/75" : "text-muted"]}>
+      {summary}
+    </p>
+
+    <div class="mt-4 flex items-center justify-between gap-3">
+      <a
+        href={waLink(`Hola Lugo Vid, quiero apartar lugar en el evento: ${title}`)}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="press relative z-10 inline-flex h-9 items-center gap-2 rounded-full bg-[#25D366] px-3.5 text-[13px] font-semibold text-[#06361b] transition-colors hover:bg-[#2ee072]"
+      >
+        <FaWhatsapp className="h-4 w-4" aria-hidden="true" />
+        Preguntar
+      </a>
+      <span
+        class:list={[
+          "inline-flex items-center gap-1 text-[13px] font-semibold transition-transform duration-300 ease-out group-hover:translate-x-0.5",
+          onImage ? "text-white" : "text-primary",
+        ]}
+        aria-hidden="true"
+      >
+        Ver más
+        <FiArrowUpRight className="h-4 w-4" />
+      </span>
+    </div>
+  </div>
+</article>

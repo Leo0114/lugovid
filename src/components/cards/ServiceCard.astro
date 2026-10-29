@@ -1,0 +1,59 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { FiArrowUpRight } from "react-icons/fi";
+import Media from "@/components/ui/Media.astro";
+import ContactActions from "@/components/ui/ContactActions.astro";
+
+interface Props {
+  entry: CollectionEntry<"servicios">;
+  class?: string;
+}
+
+const { entry, class: className = "" } = Astro.props;
+const { title, summary, badge, icon, tone, cover, coverAlt } = entry.data;
+const href = `/servicios/${entry.id}`;
+---
+
+<article
+  class:list={[
+    "lift group relative flex h-full flex-col overflow-hidden rounded-2xl bg-panel shadow-e1 ring-1 ring-line",
+    className,
+  ]}
+>
+  <Media
+    cover={cover}
+    alt={coverAlt ?? title}
+    icon={icon}
+    tone={tone}
+    name={`servicio-media-${entry.id}`}
+    class="aspect-[16/10]"
+  >
+    {
+      badge && (
+        <span class="absolute left-3 top-3 rounded-full bg-panel/90 px-2.5 py-1 text-[11px] font-semibold text-ink shadow-sm backdrop-blur-md">
+          {badge}
+        </span>
+      )
+    }
+  </Media>
+
+  <div class="flex flex-1 flex-col p-5">
+    <h3 class="type-heading text-ink" transition:name={`servicio-title-${entry.id}`}>
+      <a href={href} class="outline-none after:absolute after:inset-0 after:content-['']">
+        {title}
+      </a>
+    </h3>
+    <p class="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted">{summary}</p>
+
+    <div class="mt-auto flex items-center justify-between gap-3 pt-5">
+      <ContactActions size="sm" message={`Hola Lugo Vid, quiero información del servicio: ${title}`} />
+      <span
+        class="inline-flex items-center gap-1 text-[13px] font-semibold text-primary transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+        aria-hidden="true"
+      >
+        Detalles
+        <FiArrowUpRight className="h-4 w-4" />
+      </span>
+    </div>
+  </div>
+</article>
