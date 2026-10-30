@@ -2,6 +2,7 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { ICON_NAMES, TONE_NAMES } from "./lib/icons";
+import { TARIFF_NAMES, tariffFrom } from "./lib/pricing";
 
 /**
  * Every collection lives in `src/content/<name>/*.md`.
@@ -13,19 +14,28 @@ import { ICON_NAMES, TONE_NAMES } from "./lib/icons";
  */
 
 /**
- * Reference price in MXN. `amount` is the small-dog rate; when `bySize` is on,
- * the other sizes are derived from DOG_SIZES in src/lib/pricing.ts, which the
- * calculator, the pricing section and the cards all share.
+ * Reference price in MXN. Set either `tariff`, to use the real per-size rates
+ * in src/constants/pricing.ts (`amount` becomes its lowest rate), or a flat
+ * `amount` for services that don't change with the dog's size.
  */
-const price = z.object({
-  amount: z.number().nonnegative(),
-  /** What one unit buys: "día", "noche", "sesión", "viaje", "perrito". */
-  unit: z.string(),
-  /** Show "desde" before the amount. */
-  from: z.boolean().default(true),
-  bySize: z.boolean().default(true),
-  note: z.string().optional(),
-});
+const price = z
+  .object({
+    tariff: z.enum(TARIFF_NAMES).optional(),
+    amount: z.number().nonnegative().optional(),
+    /** What one unit buys: "día", "noche", "sesión", "viaje", "perrito". */
+    unit: z.string(),
+    /** Show "desde" before the amount. */
+    from: z.boolean().default(true),
+    note: z.string().optional(),
+  })
+  .refine((p) => (p.tariff === undefined) !== (p.amount === undefined), {
+    message: "Set either `tariff` or `amount`, not both.",
+  })
+  .transform(({ tariff, amount, ...rest }) => ({
+    ...rest,
+    tariff,
+    amount: tariff ? tariffFrom(tariff) : amount!,
+  }));
 
 const servicios = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/servicios" }),

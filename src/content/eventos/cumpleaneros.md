@@ -14,7 +14,6 @@ price:
   amount: 250
   unit: "festejado"
   from: false
-  bySize: false
 highlights:
   - "Lorem ipsum dolor sit amet"
   - "Consectetur adipiscing elit"

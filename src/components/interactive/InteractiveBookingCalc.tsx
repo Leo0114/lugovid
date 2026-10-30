@@ -2,7 +2,18 @@ import { useMemo, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import { ICONS, type IconName } from "@/lib/icons";
-import { DOG_SIZES, EXTRAS, formatMXN, pluralUnit, priceForSize } from "@/lib/pricing";
+import {
+  DOG_SIZES,
+  EXTRAS,
+  HAIR_LENGTHS,
+  extraPrice,
+  formatMXN,
+  pluralUnit,
+  tariffPrice,
+  tariffUsesHair,
+  type HairLength,
+  type Tariff,
+} from "@/lib/pricing";
 import { waLink } from "@/lib/contact";
 
 /** Serializable slice of a `servicios` entry, passed in from Astro. */
@@ -12,7 +23,8 @@ export interface QuoteService {
   icon: IconName;
   amount: number;
   unit: string;
-  bySize: boolean;
+  /** Real per-size rates; without it `amount` is a flat price. */
+  tariff?: Tariff;
 }
 
 interface Props {
@@ -24,19 +36,32 @@ const MAX_DAYS = 30;
 
 export default function InteractiveBookingCalc({ services, defaultServiceId }: Props) {
   const [serviceId, setServiceId] = useState(defaultServiceId ?? services[0]?.id);
-  const [sizeId, setSizeId] = useState(DOG_SIZES[1].id);
+  const [sizeId, setSizeId] = useState(DOG_SIZES[2].id);
+  const [hair, setHair] = useState<HairLength>("corto");
   const [days, setDays] = useState(3);
   const [extras, setExtras] = useState<Set<string>>(new Set());
   const [dogName, setDogName] = useState("");
 
   const service = services.find((s) => s.id === serviceId) ?? services[0];
   const size = DOG_SIZES.find((s) => s.id === sizeId) ?? DOG_SIZES[0];
-  const chosenExtras = useMemo(() => EXTRAS.filter((e) => extras.has(e.id)), [extras]);
-
-  const unitPrice = service ? (service.bySize ? priceForSize(service.amount, size) : service.amount) : 0;
-  const total = unitPrice * days + chosenExtras.reduce((sum, e) => sum + e.amount, 0);
+  // A bath is no extra when the service already is one.
+  const offeredExtras = useMemo(
+    () => EXTRAS.filter((e) => !e.tariff || e.tariff !== service?.tariff),
+    [service?.tariff],
+  );
+  const chosenExtras = offeredExtras.filter((e) => extras.has(e.id));
 
   if (!service) return null;
+
+  const sizeMatters = Boolean(service.tariff) || chosenExtras.some((e) => e.tariff);
+  const hairMatters =
+    (service.tariff !== undefined && tariffUsesHair(service.tariff)) ||
+    chosenExtras.some((e) => e.tariff && tariffUsesHair(e.tariff));
+  const hairName = HAIR_LENGTHS.find((h) => h.id === hair)!.name;
+
+  const unitPrice = service.tariff ? tariffPrice(service.tariff, size, hair) : service.amount;
+  const priced = chosenExtras.map((e) => ({ ...e, price: extraPrice(e, size, hair) }));
+  const total = unitPrice * days + priced.reduce((sum, e) => sum + e.price, 0);
 
   const toggleExtra = (id: string) =>
     setExtras((prev) => {
@@ -52,9 +77,10 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
     "Hola Lugo Vid, me gustaría reservar:",
     `- Perrito: ${dogName.trim() || "Mi mascota"}`,
     `- Servicio: ${service.title}`,
-    `- Tamaño: ${size.name} (${size.weight})`,
+    ...(sizeMatters ? [`- Tamaño: ${size.name} (${size.weight})`] : []),
+    ...(hairMatters ? [`- Pelo: ${hairName.toLowerCase()}`] : []),
     `- Duración: ${days} ${plural(days)}`,
-    ...chosenExtras.map((e) => `- Extra: ${e.label}`),
+    ...priced.map((e) => `- Extra: ${e.label} (${formatMXN(e.price)})`),
     `Estimado: ${formatMXN(total)} MXN`,
     "¿Tienen disponibilidad?",
   ].join("\n");
@@ -87,6 +113,7 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
                     </span>
                     <span className="text-xs font-bold leading-tight">{s.title}</span>
                     <span className="mt-0.5 text-[11px] tabular-nums text-muted">
+                      {s.tariff && "Desde "}
                       {formatMXN(s.amount)} / {s.unit}
                     </span>
                   </button>
@@ -95,12 +122,12 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
             </div>
           </fieldset>
 
-          <fieldset disabled={!service.bySize} className="disabled:opacity-50">
+          <fieldset disabled={!sizeMatters} className="disabled:opacity-50">
             <legend className={legend}>
               2. Tamaño de tu perrito
-              {!service.bySize && <span className="ml-2 font-normal text-muted">(no cambia el precio)</span>}
+              {!sizeMatters && <span className="ml-2 font-normal text-muted">(no cambia el precio)</span>}
             </legend>
-            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+            <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
               {DOG_SIZES.map((s) => {
                 const on = s.id === size.id;
                 return (
@@ -109,14 +136,43 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
                     type="button"
                     aria-pressed={on}
                     onClick={() => setSizeId(s.id)}
-                    className={`${option} p-3 disabled:cursor-not-allowed ${on ? optionOn : optionIdle}`}
+                    className={`${option} px-2 py-3 disabled:cursor-not-allowed ${on ? optionOn : optionIdle}`}
                   >
-                    <span className="block text-sm font-bold">{s.name}</span>
+                    <span className="block text-sm font-bold leading-tight">{s.name}</span>
                     <span className="block text-[11px] text-muted">{s.weight}</span>
+                    {service.tariff && (
+                      <span className="mt-1 block text-xs font-semibold tabular-nums">
+                        {formatMXN(tariffPrice(service.tariff, s, hair))}
+                      </span>
+                    )}
                   </button>
                 );
               })}
             </div>
+
+            {hairMatters && (
+              <div className="mt-3 flex items-center gap-3">
+                <span className="text-xs text-muted">Pelo</span>
+                <div role="group" aria-label="Largo del pelo" className="inline-flex rounded-full bg-panel-alt p-1 ring-1 ring-line">
+                  {HAIR_LENGTHS.map((h) => {
+                    const on = h.id === hair;
+                    return (
+                      <button
+                        key={h.id}
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => setHair(h.id)}
+                        className={`press rounded-full px-4 py-1.5 text-xs font-semibold ${
+                          on ? "bg-panel text-primary-ink shadow-e1" : "text-muted hover:text-ink"
+                        }`}
+                      >
+                        {h.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </fieldset>
 
           <div>
@@ -147,7 +203,7 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
           <fieldset>
             <legend className={legend}>4. Extras</legend>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {EXTRAS.map((e) => {
+              {offeredExtras.map((e) => {
                 const on = extras.has(e.id);
                 return (
                   <label
@@ -164,7 +220,7 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
                     />
                     <span className="text-left">
                       <span className="block text-xs font-bold text-ink">{e.label}</span>
-                      <span className="text-[11px] tabular-nums text-muted">+ {formatMXN(e.amount)}</span>
+                      <span className="text-[11px] tabular-nums text-muted">+ {formatMXN(extraPrice(e, size, hair))}</span>
                     </span>
                   </label>
                 );
@@ -201,6 +257,15 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
                 <dt className="text-muted">Servicio</dt>
                 <dd className="font-bold text-ink">{service.title}</dd>
               </div>
+              {sizeMatters && (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">Tamaño</dt>
+                  <dd className="text-right font-semibold text-ink">
+                    {size.name}
+                    {hairMatters && <span className="font-normal text-muted"> · {hairName.toLowerCase()}</span>}
+                  </dd>
+                </div>
+              )}
               <div className="flex justify-between gap-3">
                 <dt className="text-muted">Precio por {service.unit}</dt>
                 <dd className="font-semibold tabular-nums text-ink">{formatMXN(unitPrice)}</dd>
@@ -209,10 +274,10 @@ export default function InteractiveBookingCalc({ services, defaultServiceId }: P
                 <dt className="text-muted">Cantidad</dt>
                 <dd className="font-semibold tabular-nums text-ink">× {days}</dd>
               </div>
-              {chosenExtras.map((e) => (
+              {priced.map((e) => (
                 <div key={e.id} className="flex justify-between gap-3 text-secondary-ink">
                   <dt>{e.label}</dt>
-                  <dd className="tabular-nums">+ {formatMXN(e.amount)}</dd>
+                  <dd className="tabular-nums">+ {formatMXN(e.price)}</dd>
                 </div>
               ))}
             </dl>

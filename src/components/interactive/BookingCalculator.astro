@@ -22,7 +22,7 @@ const services: QuoteService[] = (await getServicios()).flatMap((s) =>
           icon: s.data.icon,
           amount: s.data.price.amount,
           unit: s.data.price.unit,
-          bySize: s.data.price.bySize,
+          tariff: s.data.price.tariff,
         },
       ]
     : [],

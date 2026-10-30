@@ -8,9 +8,8 @@ order: 1
 featured: true
 schedule: "Lorem ipsum: 7:30 a 19:30"
 price:
-  amount: 180
+  tariff: guarderia
   unit: "día"
-  bySize: true
   note: "Lorem ipsum: juego supervisado y reporte diario"
 includes:
   - "Lorem ipsum dolor sit amet"

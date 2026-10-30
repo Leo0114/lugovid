@@ -10,7 +10,6 @@ schedule: "Lorem ipsum: 7:30 a 19:30"
 price:
   amount: 120
   unit: "sesión"
-  bySize: true
   note: "Lorem ipsum: 45 minutos por sesión"
 includes:
   - "Lorem ipsum dolor sit amet"

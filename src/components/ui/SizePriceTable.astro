@@ -1,0 +1,60 @@
+---
+/**
+ * Real per-size rates of a tariff from src/constants/pricing.ts. Baños get a
+ * column per coat length; the others a single price column.
+ */
+import { DOG_SIZES, HAIR_LENGTHS, formatMXN, tariffPrice, tariffUsesHair, type Tariff } from "@/lib/pricing";
+
+interface Props {
+  tariff: Tariff;
+  unit: string;
+  /** `dark` for light text on the deep featured card. */
+  surface?: "page" | "dark";
+  class?: string;
+}
+
+const { tariff, unit, surface = "page", class: className = "" } = Astro.props;
+const hair = tariffUsesHair(tariff);
+const dark = surface === "dark";
+const muted = dark ? "text-white/60" : "text-muted";
+const strong = dark ? "text-white" : "text-ink";
+---
+
+<table class:list={["w-full border-collapse text-sm", className]}>
+  <caption class="sr-only">Precio por {unit} según el tamaño{hair && " y el largo del pelo"}</caption>
+  <thead>
+    <tr class:list={["text-left text-[11px] font-semibold", muted]}>
+      <th scope="col" class="pb-2 font-semibold">Tamaño</th>
+      {
+        hair ? (
+          HAIR_LENGTHS.map((h) => (
+            <th scope="col" class="pb-2 pl-3 text-right font-semibold">
+              {h.name}
+            </th>
+          ))
+        ) : (
+          <th scope="col" class="pb-2 pl-3 text-right font-semibold">
+            Por {unit}
+          </th>
+        )
+      }
+    </tr>
+  </thead>
+  <tbody class:list={["border-t", dark ? "border-white/10" : "border-line"]}>
+    {
+      DOG_SIZES.map((size) => (
+        <tr class:list={["border-b last:border-b-0", dark ? "border-white/10" : "border-line"]}>
+          <th scope="row" class:list={["py-2.5 text-left font-medium", strong]}>
+            {size.name}
+            <span class:list={["block text-[11px] font-normal", muted]}>{size.weight}</span>
+          </th>
+          {(hair ? HAIR_LENGTHS.map((h) => h.id) : [undefined]).map((h) => (
+            <td class:list={["py-2.5 pl-3 text-right font-semibold tabular-nums", strong]}>
+              {formatMXN(tariffPrice(tariff, size, h))}
+            </td>
+          ))}
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

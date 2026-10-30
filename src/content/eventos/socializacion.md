@@ -14,7 +14,6 @@ price:
   amount: 90
   unit: "perrito"
   from: false
-  bySize: false
 highlights:
   - "Lorem ipsum dolor sit amet"
   - "Consectetur adipiscing elit"

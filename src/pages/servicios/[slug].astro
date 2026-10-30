@@ -11,7 +11,7 @@ import PriceTag from "@/components/ui/PriceTag.astro";
 import BookingCalculator from "@/components/interactive/BookingCalculator.astro";
 import SectionHeader from "@/components/shared/SectionHeader.astro";
 import { getServicios } from "@/lib/content";
-import { DOG_SIZES, formatMXN, priceForSize } from "@/lib/pricing";
+import SizePriceTable from "@/components/ui/SizePriceTable.astro";
 
 export const prerender = true;
 
@@ -87,24 +87,12 @@ const message = `Hola Lugo Vid, quiero información del servicio: ${title}`;
       </div>
 
       {
-        (includes.length > 0 || price?.bySize) && (
+        (includes.length > 0 || price?.tariff) && (
           <aside class="h-fit space-y-8 rounded-2xl bg-panel-alt p-6 lg:sticky lg:top-28">
-            {price?.bySize && (
+            {price?.tariff && (
               <div>
                 <h2 class="text-base font-bold text-ink">Precio por tamaño</h2>
-                <dl class="mt-4 space-y-2.5">
-                  {DOG_SIZES.map((size) => (
-                    <div class="flex items-baseline justify-between gap-3 text-sm">
-                      <dt class="text-ink/85">
-                        {size.name} <span class="text-muted">{size.weight}</span>
-                      </dt>
-                      <dd class="font-semibold tabular-nums text-ink">
-                        {formatMXN(priceForSize(price.amount, size))}
-                        <span class="font-normal text-muted"> / {price.unit}</span>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                <SizePriceTable tariff={price.tariff} unit={price.unit} class="mt-4" />
               </div>
             )}
             {includes.length > 0 && (

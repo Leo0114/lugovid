@@ -10,7 +10,6 @@ schedule: "Lorem ipsum: 7:30 a 19:30"
 price:
   amount: 350
   unit: "día"
-  bySize: true
   note: "Lorem ipsum: alberca y circuito de juego"
 includes:
   - "Lorem ipsum dolor sit amet"
